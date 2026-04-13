@@ -111,9 +111,45 @@
   margin-top: 8px;
 }
 
-.l2-site {
-  border: 1px solid #e0e0e0;
+/* Макет «окна браузера» вокруг страницы */
+.l2-browser-shell {
   border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #d0d7e2;
+  box-shadow: 0 14px 42px rgba(15, 23, 42, 0.1);
+  background: #e8ecf3;
+}
+
+.l2-browser-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 8px 8px 0;
+  background: #dfe4ee;
+}
+
+.l2-browser-tab {
+  padding: 8px 14px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748b;
+  background: #c9d1e0;
+  border-radius: 10px 10px 0 0;
+  max-width: 42%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.l2-browser-tab--active {
+  color: #1e293b;
+  background: #fafafa;
+  box-shadow: 0 -2px 0 #fafafa;
+}
+
+.l2-site {
+  border: none;
+  border-radius: 0;
   overflow: hidden;
   background: #fafafa;
 }
@@ -124,7 +160,8 @@
   justify-content: space-between;
   gap: 10px;
   padding: 10px 12px;
-  background: #eee;
+  background: linear-gradient(180deg, #f1f5f9 0%, #e8edf4 100%);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .l2-addr {
@@ -187,28 +224,205 @@
 }
 
 .l2-site-body {
-  padding: 14px;
+  padding: 0 14px 16px;
   color: #333;
 }
 
-.l2-email {
-  border: 1px solid #e0e0e0;
-  border-radius: 14px;
-  background: #fafafa;
-  overflow: hidden;
+.l2-site-body > h3 {
+  margin: 14px 0 8px;
 }
 
-.l2-email-head {
-  padding: 12px 14px;
-  background: #eee;
-  display: grid;
+.l2-site-hero {
+  margin: 0 -14px 12px;
+  padding: 18px 16px;
+  background: linear-gradient(125deg, #f59e0b 0%, #ea580c 55%, #c2410c 100%);
+  color: #fff;
+}
+
+.l2-site-hero-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.l2-site-hero-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.l2-site-hero-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Макет «окна почты» вокруг письма */
+.l2-mail-shell {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #d0d7e2;
+  box-shadow: 0 14px 42px rgba(15, 23, 42, 0.1);
+  background: linear-gradient(165deg, #eef2f8 0%, #e4e9f2 100%);
+}
+
+.l2-mail-chrome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.65);
+  border-bottom: 1px solid #d8dde6;
+}
+
+.l2-mail-dots {
+  display: flex;
   gap: 6px;
 }
 
+.l2-mail-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.l2-mail-dot--r {
+  background: #ff5f57;
+}
+.l2-mail-dot--y {
+  background: #febc2e;
+}
+.l2-mail-dot--g {
+  background: #28c840;
+}
+
+.l2-mail-chrome-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.02em;
+}
+
+.l2-mail-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 8px 12px 10px;
+  background: rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid #d8dde6;
+}
+
+.l2-mail-toolbar-pill {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.l2-mail-toolbar-muted {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.l2-mail-main {
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) 1fr;
+  gap: 0;
+  min-height: 0;
+}
+
+.l2-mail-aside {
+  padding: 12px 10px;
+  background: rgba(248, 250, 252, 0.95);
+  border-right: 1px solid #e2e8f0;
+}
+
+.l2-mail-aside-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #64748b;
+  padding: 8px 6px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.l2-mail-aside-row--active {
+  background: #fff;
+  color: #334155;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.l2-mail-aside-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #667eea;
+  flex-shrink: 0;
+}
+
+.l2-mail-aside-dot--dim {
+  background: #cbd5e1;
+}
+
+.l2-email {
+  border: none;
+  border-radius: 0;
+  background: #fff;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.l2-email-meta {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.l2-email-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+}
+
+.l2-email-head {
+  padding: 0;
+  background: transparent;
+  display: grid;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
 .l2-email-body {
-  padding: 14px;
+  padding: 14px 16px 18px;
   color: #333;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .l2-form {
@@ -231,13 +445,6 @@
 .l2-popup {
   margin-top: 8px;
   width: 100%;
-}
-
-.l2-footer {
-  margin-top: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
 }
 
 .l2-luno {
@@ -264,6 +471,21 @@
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.l2-modal--enter {
+  animation: l2-modal-pop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes l2-modal-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .l2-modal-title {
@@ -345,6 +567,25 @@
 @media (max-width: 640px) {
   .l2-grid {
     grid-template-columns: 1fr;
+  }
+
+  .l2-mail-main {
+    grid-template-columns: 1fr;
+  }
+
+  .l2-mail-aside {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 10px;
+  }
+
+  .l2-mail-aside-row {
+    margin-bottom: 0;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 }
 

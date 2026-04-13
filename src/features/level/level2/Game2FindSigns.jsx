@@ -1,12 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { game2Signs } from './level2FlowData'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
+
+const POPUP_AUTO_MS = 1100
+const POPUP_WRONG =
+  'Так делать не стоит: на подозрительных окнах не нажимай «Получить приз». Закрой окно кнопкой «Закрыть».'
 
 export function Game2FindSigns({ onComplete }) {
   const [found, setFound] = useState(new Set())
   const [msg, setMsg] = useState('')
   const [popupOpen, setPopupOpen] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setPopupOpen(true), POPUP_AUTO_MS)
+    return () => clearTimeout(t)
+  }, [])
 
   const click = (id) => {
     if (found.has(id)) return
@@ -21,10 +30,16 @@ export function Game2FindSigns({ onComplete }) {
     <div className="l2-card">
       <h2 className="l2-title">Игра 2: Найди признаки фишинга на сайте</h2>
       <p className="l2-sub">
-        Нажимай на элементы, которые кажутся подозрительными. Нужно найти все признаки ({game2Signs.length}).
+        Нажимай на элементы страницы, которые кажутся подозрительными. Рекламное окно появится само — признак
+        «всплывающее окно» засчитается, если закроешь его кнопкой «Закрыть» (всего признаков: {game2Signs.length}).
       </p>
 
-      <div className="l2-site">
+      <div className="l2-browser-shell">
+        <div className="l2-browser-tabs" aria-hidden>
+          <span className="l2-browser-tab l2-browser-tab--active">Оплата призов</span>
+          <span className="l2-browser-tab">Новая вкладка</span>
+        </div>
+        <div className="l2-site">
         <div className="l2-site-bar">
           <div className="l2-addr">
             <span className="l2-addr-dot l2-dot-red" />
@@ -49,6 +64,12 @@ export function Game2FindSigns({ onComplete }) {
         </div>
 
         <div className="l2-site-body">
+          <div className="l2-site-hero" aria-hidden>
+            <div className="l2-site-hero-inner">
+              <span className="l2-site-hero-badge">Акция</span>
+              <span className="l2-site-hero-title">Мгновенный приз</span>
+            </div>
+          </div>
           <h3>Вы выиграли приз! Заберите прямо сейчас</h3>
           <p>
             <button
@@ -85,30 +106,16 @@ export function Game2FindSigns({ onComplete }) {
               СРОЧНО подтвердите, иначе приз сгорит!
             </button>
           </div>
-
-          <div className="l2-footer">
-            <button
-              type="button"
-              className={`l2-hot-inline ${found.has('no_contacts') ? 'l2-found' : ''}`}
-              onClick={() => click('no_contacts')}
-            >
-              Контакты отсутствуют
-            </button>
-            <button
-              type="button"
-              className={`l2-hot-inline ${found.has('popup') ? 'l2-found' : ''}`}
-              onClick={() => setPopupOpen(true)}
-            >
-              Реклама / всплывающее окно
-            </button>
-          </div>
+        </div>
         </div>
       </div>
 
       {popupOpen && (
-        <div className="l2-modal-backdrop" role="presentation" onClick={() => setPopupOpen(false)}>
-          <div className="l2-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-            <div className="l2-modal-title">Поздравляем!</div>
+        <div className="l2-modal-backdrop" role="presentation">
+          <div className="l2-modal l2-modal--enter" role="dialog" aria-modal="true" aria-labelledby="l2-popup-title">
+            <div className="l2-modal-title" id="l2-popup-title">
+              Поздравляем!
+            </div>
             <div className="l2-modal-body">
               Вы выиграли приз. Нажмите кнопку ниже, чтобы получить его прямо сейчас.
             </div>
@@ -116,14 +123,18 @@ export function Game2FindSigns({ onComplete }) {
               <button
                 type="button"
                 className="l2-bad"
+                onClick={() => setMsg(POPUP_WRONG)}
+              >
+                Получить приз
+              </button>
+              <button
+                type="button"
+                className="l2-good"
                 onClick={() => {
                   click('popup')
                   setPopupOpen(false)
                 }}
               >
-                Получить приз
-              </button>
-              <button type="button" className="l2-good" onClick={() => setPopupOpen(false)}>
                 Закрыть
               </button>
             </div>

@@ -13,6 +13,7 @@ import { Level2Theory } from './Level2Theory'
 import { Game2FindSigns } from './Game2FindSigns'
 import { ConsequencesGrid } from './ConsequencesGrid'
 import { Level2Test } from './Level2Test'
+import { GameSplashScreen } from '../../../shared/components/GameSplashScreen'
 import '../LevelPage.css'
 import './level2.css'
 import { CharacterAvatar } from '../../../shared/components/CharacterAvatar'
@@ -51,12 +52,13 @@ export function Level2Flow() {
   const next = () => save(step + 1)
   const prev = () => save(Math.max(0, step - 1))
 
-  const finish = () => {
+  const finish = async () => {
     if (user) {
-      unlockNextLevel(user.uid, 3)
-      completeLevelInDb(user.uid, LEVEL_ID)
-      // сбрасываем шаг для возможности перепройти
-      setLevelStep(user.uid, LEVEL_ID, 0)
+      await Promise.all([
+        unlockNextLevel(user.uid, 3),
+        completeLevelInDb(user.uid, LEVEL_ID),
+        setLevelStep(user.uid, LEVEL_ID, 0),
+      ])
     }
     navigate('/levels')
   }
@@ -68,7 +70,7 @@ export function Level2Flow() {
   const teacherExitPreview = () => navigate('/levels')
 
   return (
-    <div className="level-page">
+    <div className="level-page level-page--l2">
       <div className="level-container l2-wide">
         <div className="level-header">
           <button type="button" className="back-button" onClick={() => navigate('/levels')}>
@@ -101,6 +103,14 @@ export function Level2Flow() {
               </button>
             </div>
           </div>
+        )}
+        {item.type === 'splash' && (
+          <GameSplashScreen
+            title={item.title}
+            paragraphs={item.paragraphs}
+            buttonText={item.buttonText}
+            onContinue={next}
+          />
         )}
 
         {item.type === 'game1' && <Game1PhishingEmail onComplete={next} />}

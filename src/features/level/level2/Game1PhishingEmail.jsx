@@ -23,29 +23,64 @@ export function Game1PhishingEmail({ onComplete }) {
         Нажми на подозрительные фрагменты письма (отправитель, ссылка, слова, просьбы). Нужно найти все признаки ({game1EmailHotspots.length}).
       </p>
 
-      <div className="l2-email">
-        <div className="l2-email-head">
-          <div>
-            От:{" "}
-            <button
-              type="button"
-              className={`l2-hot-inline ${found.has('from') ? 'l2-found' : ''}`}
-              onClick={() => click('from')}
-            >
-              support@security-mail.com
-            </button>
+      <div className="l2-mail-shell" aria-hidden="false">
+        <div className="l2-mail-chrome">
+          <div className="l2-mail-dots" aria-hidden>
+            <span className="l2-mail-dot l2-mail-dot--r" />
+            <span className="l2-mail-dot l2-mail-dot--y" />
+            <span className="l2-mail-dot l2-mail-dot--g" />
           </div>
-          <div>
-            Тема:{" "}
-            <button
-              type="button"
-              className={`l2-hot-inline ${found.has('subject') ? 'l2-found' : ''}`}
-              onClick={() => click('subject')}
-            >
-              Срочно! Аккаунт будет заблокирован
-            </button>
-          </div>
+          <span className="l2-mail-chrome-title">Почта — Входящие</span>
         </div>
+        <div className="l2-mail-toolbar">
+          <span className="l2-mail-toolbar-pill">Написать</span>
+          <span className="l2-mail-toolbar-muted">Входящие</span>
+          <span className="l2-mail-toolbar-muted">Отправленные</span>
+          <span className="l2-mail-toolbar-muted">Спам</span>
+        </div>
+        <div className="l2-mail-main">
+          <aside className="l2-mail-aside">
+            <div className="l2-mail-aside-row l2-mail-aside-row--active">
+              <span className="l2-mail-aside-dot" />
+              Служба безопасности
+            </div>
+            <div className="l2-mail-aside-row">
+              <span className="l2-mail-aside-dot l2-mail-aside-dot--dim" />
+              Рассылка курса
+            </div>
+            <div className="l2-mail-aside-row">
+              <span className="l2-mail-aside-dot l2-mail-aside-dot--dim" />
+              Уведомления
+            </div>
+          </aside>
+          <div className="l2-email">
+            <div className="l2-email-meta">
+              <div className="l2-email-avatar" aria-hidden>
+                SB
+              </div>
+              <div className="l2-email-head">
+                <div>
+                  От:{" "}
+                  <button
+                    type="button"
+                    className={`l2-hot-inline ${found.has('from') ? 'l2-found' : ''}`}
+                    onClick={() => click('from')}
+                  >
+                    support@security-mail.com
+                  </button>
+                </div>
+                <div>
+                  Тема:{" "}
+                  <button
+                    type="button"
+                    className={`l2-hot-inline ${found.has('subject') ? 'l2-found' : ''}`}
+                    onClick={() => click('subject')}
+                  >
+                    Срочно! Аккаунт будет заблокирован
+                  </button>
+                </div>
+              </div>
+            </div>
 
         <div className="l2-email-body">
           <p>
@@ -101,6 +136,8 @@ export function Game1PhishingEmail({ onComplete }) {
               Администрацыя службы подержки
             </button>
           </p>
+        </div>
+          </div>
         </div>
       </div>
 
