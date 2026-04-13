@@ -12,7 +12,7 @@ function shuffle(arr) {
   return a
 }
 
-const BAD_FEEDBACK_MS = 9000
+const BAD_FEEDBACK_MS = 4000
 
 export function Game1CardSort({ onComplete }) {
   const deck = useMemo(() => {
@@ -127,8 +127,12 @@ export function Game1CardSort({ onComplete }) {
         <p className="l1-feedback-bad">Подумай ещё раз — эта карточка относится к другой колонке.</p>
       )}
       {allCorrect && (
-        <LunoVictoryScreen title="" onContinue={onComplete} continueLabel="Вперёд">
-          <p>Отлично! Ты разобрался, какие сведения можно указывать открыто.</p>
+        <LunoVictoryScreen
+          title="Отлично!"
+          onContinue={onComplete}
+          continueLabel="Вперёд"
+        >
+          <p>Ты разобрался, какие сведения можно указывать открыто, а какие лучше не публиковать.</p>
         </LunoVictoryScreen>
       )}
     </div>

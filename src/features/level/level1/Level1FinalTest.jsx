@@ -1,20 +1,10 @@
 import { useState, useMemo } from 'react'
 import { level1TestQuestions, level1TestFill } from './level1FlowData'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
-import '../LevelPage.css'
 import './level1.css'
 
 const MC_COUNT = level1TestQuestions.length
 const TOTAL_STEPS = MC_COUNT + 1
-
-function normFill(s) {
-  return String(s || '')
-    .normalize('NFC')
-    .trim()
-    .replace(/\s+/g, ' ')
-    .replace(/ё/g, 'е')
-    .toLowerCase()
-}
 
 export function Level1FinalTest({ onComplete }) {
   const [answers, setAnswers] = useState({})
@@ -23,7 +13,7 @@ export function Level1FinalTest({ onComplete }) {
   const [submitted, setSubmitted] = useState(false)
 
   const fillCorrect = useMemo(() => {
-    return level1TestFill.blanks.every((b) => normFill(fill[b.id]) === normFill(b.answer))
+    return level1TestFill.blanks.every((b) => (fill[b.id] || '') === b.answer)
   }, [fill])
 
   const validateMc = () => {
@@ -97,38 +87,32 @@ export function Level1FinalTest({ onComplete }) {
           {submitted && answers[level1TestQuestions[step].id] !== level1TestQuestions[step].correct && (
             <p className="l1-feedback-bad">Неверно.</p>
           )}
-          <div className="level-test-nav">
-            <div className="level-test-nav__back">
-              {step > 0 ? (
-                <button type="button" className="back-button" onClick={() => setStep((s) => s - 1)}>
-                  ← Назад
-                </button>
-              ) : (
-                <span className="level-test-nav__spacer" aria-hidden="true" />
-              )}
-            </div>
-            <div className="level-test-nav__forward">
-              {step < MC_COUNT - 1 && (
-                <button
-                  type="button"
-                  className="l1-btn-primary"
-                  onClick={goNext}
-                  disabled={!answers[level1TestQuestions[step].id]}
-                >
-                  Далее
-                </button>
-              )}
-              {step === MC_COUNT - 1 && (
-                <button
-                  type="button"
-                  className="l1-btn-primary"
-                  onClick={checkMcBlock}
-                  disabled={!answers[level1TestQuestions[step].id]}
-                >
-                  Перейти к заданию с пропусками
-                </button>
-              )}
-            </div>
+          <div className="l1-test-nav">
+            {step > 0 && (
+              <button type="button" className="back-button" onClick={() => setStep((s) => s - 1)}>
+                ← Назад
+              </button>
+            )}
+            {step < MC_COUNT - 1 && (
+              <button
+                type="button"
+                className="l1-btn-primary"
+                onClick={goNext}
+                disabled={!answers[level1TestQuestions[step].id]}
+              >
+                Далее
+              </button>
+            )}
+            {step === MC_COUNT - 1 && (
+              <button
+                type="button"
+                className="l1-btn-primary"
+                onClick={checkMcBlock}
+                disabled={!answers[level1TestQuestions[step].id]}
+              >
+                Перейти к заданию с пропусками
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -157,17 +141,13 @@ export function Level1FinalTest({ onComplete }) {
               {b.sentenceAfter}
             </p>
           ))}
-          <div className="level-test-nav">
-            <div className="level-test-nav__back">
-              <button type="button" className="back-button" onClick={() => setStep(MC_COUNT - 1)}>
-                ← К вопросам
-              </button>
-            </div>
-            <div className="level-test-nav__forward">
-              <button type="button" className="l1-btn-primary" onClick={checkFill}>
-                Проверить ответы
-              </button>
-            </div>
+          <div className="l1-test-nav">
+            <button type="button" className="back-button" onClick={() => setStep(MC_COUNT - 1)}>
+              ← К вопросам
+            </button>
+            <button type="button" className="l1-btn-primary" onClick={checkFill}>
+              Проверить ответы
+            </button>
           </div>
           {submitted && !fillCorrect && (
             <p className="l1-feedback-bad">Есть ошибки в пропусках. Исправь и нажми «Проверить ответы» снова.</p>

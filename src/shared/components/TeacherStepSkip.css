@@ -6,12 +6,6 @@
   max-width: min(calc(100vw - 32px), 320px);
 }
 
-.teacher-step-skip-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .teacher-step-skip-btn {
   width: 100%;
   padding: 12px 16px;
@@ -25,12 +19,6 @@
   cursor: pointer;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
   transition: filter 0.15s, transform 0.1s;
-}
-
-.teacher-step-skip-btn--secondary {
-  border-color: #90a4ae;
-  background: linear-gradient(180deg, #f5f7f8 0%, #cfd8dc 100%);
-  color: #37474f;
 }
 
 .teacher-step-skip-btn:hover {

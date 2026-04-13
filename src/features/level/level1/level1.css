@@ -128,6 +128,7 @@
   background: white;
   cursor: pointer;
   font-size: 0.9rem;
+  font-family: inherit;
   max-width: 100%;
 }
 
@@ -148,21 +149,16 @@
   border-radius: 12px;
 }
 
-.l1-theory {
-  max-width: 760px;
-  margin: 0 auto;
-}
-
 .l1-theory-title {
-  font-size: 2rem;
-  margin-bottom: 18px;
+  font-size: 1.75rem;
+  margin-bottom: 16px;
 }
 
 .l1-theory-p {
-  margin-bottom: 16px;
-  line-height: 1.65;
+  margin-bottom: 14px;
+  line-height: 1.6;
   color: #333;
-  font-size: 1.22rem;
+  font-size: 1.12rem;
 }
 
 .l1-glossary {
@@ -301,6 +297,7 @@
   border: 1px solid #ccc;
   background: white;
   cursor: pointer;
+  font-family: inherit;
 }
 
 .l1-g3-in {
@@ -313,6 +310,7 @@
   border: 1px solid #4caf50;
   background: #f1f8e9;
   cursor: pointer;
+  font-family: inherit;
 }
 
 .l1-timer {
@@ -342,26 +340,12 @@
 
 .l1-game4-btns-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
-}
-
-.l1-game4-password {
-  max-width: 920px;
-  margin: 0 auto;
-}
-
-.l1-game4-password .l1-timer {
-  font-size: 1.85rem;
-}
-
-.l1-game4-password h2 {
-  font-size: 1.45rem;
-  margin-bottom: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
 }
 
 .l1-pwd-display-large code {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
 }
 
 .l1-hint-block-large {
@@ -552,37 +536,11 @@
   border-color: #667eea;
 }
 
-.l1-glossary-toggle-inner {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.l1-glossary-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 5px;
-  border-radius: 999px;
-  background: #e53935;
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: 800;
-  line-height: 20px;
-  text-align: center;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-}
-
 .l1-glossary-modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 300;
-  background: rgba(25, 50, 120, 0.42);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -628,7 +586,7 @@
 }
 
 .l1-glossary-modal-item strong {
-  color: #2e7d32;
+  color: #3949ab;
   display: block;
   margin-bottom: 4px;
 }
@@ -720,24 +678,6 @@
   align-items: center;
   justify-content: center;
   font-size: 2.2rem;
-}
-
-.l1-social-avatar-photo {
-  padding: 0;
-  overflow: hidden;
-  border: 2px solid rgba(74, 118, 168, 0.35);
-}
-
-.l1-social-avatar-photo .ch-avatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-}
-
-.l1-social-avatar-photo .ch-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .l1-social-name {
@@ -833,57 +773,85 @@
   box-shadow: none;
 }
 
-/* Игра 5: окно как на макете — светлая область контента */
-.l1-2fa-window--mock .l1-2fa-titlebar {
-  background: linear-gradient(180deg, #6a1b9a 0%, #4a148c 100%);
-  justify-content: flex-start;
+.l1-2fa-verify {
+  margin-top: 8px;
 }
 
-.l1-2fa-titlebar-label {
-  flex: 1;
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.88rem;
+.l1-2fa-method-note {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.l1-2fa-arrival {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.l1-2fa-arrival-title {
+  font-size: 0.92rem;
   opacity: 0.95;
 }
 
-.l1-2fa-window--mock .l1-2fa-body {
-  background: #fafafa;
-  color: #1a237e;
-  padding: 22px 18px 20px;
+.l1-2fa-arrival-code {
+  margin-top: 4px;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
 }
 
-.l1-2fa-window--mock .l1-2fa-heading {
-  color: #311b92;
-  margin-bottom: 18px;
+.l1-2fa-arrival--small {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
 }
 
-.l1-2fa-window--mock .l1-2fa-option {
-  border: 2px solid #d1c4e9;
-  background: #fff;
-  color: #283593;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+.l1-2fa-code-display {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.16);
+  text-align: center;
+  letter-spacing: 0.24em;
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
-.l1-2fa-window--mock .l1-2fa-option:hover {
-  border-color: #9575cd;
-  background: #f3e5f5;
+.l1-2fa-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
-.l1-2fa-window--mock .l1-2fa-option.l1-2fa-option-on {
-  border-color: #5e35b1;
-  background: #ede7f6;
+.l1-2fa-key {
+  padding: 12px 0;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.l1-2fa-key-back {
+  background: rgba(244, 67, 54, 0.55);
+}
+
+.l1-2fa-key-enter {
+  background: rgba(67, 160, 71, 0.65);
 }
 
 .l1-game4-action {
-  padding: 14px 18px;
+  padding: 12px 16px;
   border-radius: 10px;
   border: 2px solid #5c6bc0;
   background: linear-gradient(180deg, #fff 0%, #e8eaf6 100%);
   color: #1a237e;
   font-weight: 600;
   cursor: pointer;
-  font-size: 1.08rem;
+  font-size: 1.02rem;
 }
 
 .l1-game4-action:hover {
@@ -892,29 +860,4 @@
 
 .l1-game4-action:active {
   transform: translateY(1px);
-}
-
-/* Уровень 1: яркие заставки перед играми (Луно) */
-.level-page--l1 .game-splash .game-splash-card {
-  background: linear-gradient(145deg, #eef2ff 0%, #e8eaf6 45%, #fce4ec 100%);
-  border: 1px solid rgba(92, 107, 192, 0.35);
-  box-shadow: 0 10px 40px rgba(63, 81, 181, 0.2);
-}
-
-.level-page--l1 .game-splash .game-splash-title {
-  color: #1a237e;
-}
-
-.level-page--l1 .game-splash .game-splash-p,
-.level-page--l1 .game-splash .game-splash-bullets {
-  color: #283593;
-}
-
-.level-page--l1 .game-splash .game-splash-btn {
-  background: linear-gradient(135deg, #5c6bc0 0%, #7e57c2 100%);
-  box-shadow: 0 4px 14px rgba(63, 81, 181, 0.45);
-}
-
-.level-page--l1 .game-splash .game-splash-btn:hover {
-  filter: brightness(1.06);
 }

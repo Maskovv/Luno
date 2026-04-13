@@ -537,6 +537,7 @@ export function Level4Flow() {
     if (user) setLevelStep(user.uid, LEVEL_ID, n)
   }
   const next = () => save(step + 1)
+  const prev = () => save(Math.max(0, step - 1))
 
   const finish = () => {
     if (user) {
@@ -560,6 +561,13 @@ export function Level4Flow() {
           <button type="button" className="back-button" onClick={() => navigate('/levels')}>← Назад</button>
           <h1>{TITLE}</h1>
         </div>
+        {step > 0 && (
+          <div className="scenario-prev-wrap">
+            <button type="button" className="scenario-prev-btn" onClick={prev}>
+              ← Предыдущий шаг сценария
+            </button>
+          </div>
+        )}
         {item.t === 'd' && (
           <div className="dialogue-section">
             <div className="character-avatar">
@@ -580,8 +588,6 @@ export function Level4Flow() {
           isLastStep={step >= flowLen - 1}
           onSkipStep={next}
           onEndPreview={teacherExitPreview}
-          canGoPrev={step > 0}
-          onPrevStep={() => save(step - 1)}
         />
       )}
     </div>

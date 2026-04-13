@@ -1,9 +1,9 @@
 import { CharacterAvatar } from './CharacterAvatar'
 import './LunoVictoryScreen.css'
 
-export function LunoVictoryScreen({ title, children, onContinue, continueLabel = 'Вперёд', className = '' }) {
+export function LunoVictoryScreen({ title, children, onContinue, continueLabel = 'Вперёд' }) {
   return (
-    <div className={['luno-victory', className].filter(Boolean).join(' ')}>
+    <div className="luno-victory">
       <div className="luno-victory-backdrop" aria-hidden />
       <div className="luno-victory-inner">
         <div className="luno-victory-mascot" aria-hidden="true">

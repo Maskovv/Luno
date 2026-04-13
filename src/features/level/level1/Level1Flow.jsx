@@ -19,7 +19,6 @@ import { CharacterAvatar } from '../../../shared/components/CharacterAvatar'
 import { GameSplashScreen } from '../../../shared/components/GameSplashScreen'
 import { TeacherStepSkip } from '../../../shared/components/TeacherStepSkip'
 import './level1.css'
-import '../LevelPage.css'
 
 const LEVEL_ID = '1'
 
@@ -41,7 +40,6 @@ export function Level1Flow() {
   const { user, isTeacher, roleLoading } = useAuth()
   const [step, setStep] = useState(0)
   const [glossaryOpen, setGlossaryOpen] = useState(false)
-  const [glossarySeen, setGlossarySeen] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -67,6 +65,7 @@ export function Level1Flow() {
   }
 
   const next = () => saveStep(step + 1)
+  const prev = () => saveStep(Math.max(0, step - 1))
 
   const completeLevel = () => {
     if (user) {
@@ -79,14 +78,14 @@ export function Level1Flow() {
 
   const item = level1Flow[step]
   if (!item) {
-    return <div className="level-page level-page--l1">Загрузка…</div>
+    return <div className="level-page">Загрузка…</div>
   }
 
   const flowLen = level1Flow.length
   const teacherExitPreview = () => navigate('/levels')
 
   return (
-    <div className="level-page level-page--l1">
+    <div className="level-page">
       <div className="level-container l1-wide">
         <div className="level-header level-header-with-tools">
           <button type="button" className="back-button" onClick={() => navigate('/levels')}>
@@ -96,19 +95,20 @@ export function Level1Flow() {
           <button
             type="button"
             className="l1-glossary-toggle"
-            onClick={() => {
-              setGlossaryOpen(true)
-              setGlossarySeen(true)
-            }}
+            onClick={() => setGlossaryOpen(true)}
             aria-label="Открыть словарик"
             title="Словарик"
           >
-            <span className="l1-glossary-toggle-inner" aria-hidden>
-              📖
-              {!glossarySeen ? <span className="l1-glossary-badge">1</span> : null}
-            </span>
+            📖
           </button>
         </div>
+        {step > 0 && (
+          <div className="scenario-prev-wrap">
+            <button type="button" className="scenario-prev-btn" onClick={prev}>
+              ← Предыдущий шаг сценария
+            </button>
+          </div>
+        )}
 
         {item.type === 'dialogue' && (
           <div className="dialogue-section">
@@ -123,7 +123,7 @@ export function Level1Flow() {
             </div>
             <div className="level-actions">
               <button type="button" className="next-button" onClick={next}>
-                {item.nextLabel ?? 'Далее →'}
+                Далее →
               </button>
             </div>
           </div>
@@ -156,10 +156,7 @@ export function Level1Flow() {
         <div
           className="l1-glossary-modal-backdrop"
           role="presentation"
-          onClick={() => {
-            setGlossaryOpen(false)
-            setGlossarySeen(true)
-          }}
+          onClick={() => setGlossaryOpen(false)}
         >
           <div
             className="l1-glossary-modal"
@@ -181,14 +178,7 @@ export function Level1Flow() {
                 </div>
               ))}
             </div>
-            <button
-              type="button"
-              className="l1-glossary-close"
-              onClick={() => {
-                setGlossaryOpen(false)
-                setGlossarySeen(true)
-              }}
-            >
+            <button type="button" className="l1-glossary-close" onClick={() => setGlossaryOpen(false)}>
               Закрыть
             </button>
           </div>
@@ -201,8 +191,6 @@ export function Level1Flow() {
           isLastStep={step >= flowLen - 1}
           onSkipStep={next}
           onEndPreview={teacherExitPreview}
-          canGoPrev={step > 0}
-          onPrevStep={() => saveStep(step - 1)}
         />
       )}
     </div>

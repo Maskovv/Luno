@@ -132,7 +132,7 @@ export function Game4Password({ onWin }) {
   }
 
   return (
-    <div className={`l1-game l1-game4-password ${badFlash ? 'l1-shake' : ''}`}>
+    <div className={`l1-game ${badFlash ? 'l1-shake' : ''}`}>
       <h2>Игра 4: Усиль пароль за ограниченное время</h2>
       <div className="l1-timer">⏱ {time} сек</div>
       <p className="l1-pwd-display l1-pwd-display-large">
@@ -160,6 +160,10 @@ export function Game4Password({ onWin }) {
           <p key={i}>{h}</p>
         ))}
       </div>
+      <p className="l1-hint l1-hint-spoiler-free">
+        Успей усилить защиту до конца таймера: думай о длине пароля, разном регистре, цифрах, символах и о
+        дополнительном подтверждении входа.
+      </p>
     </div>
   )
 }

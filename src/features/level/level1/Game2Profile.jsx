@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { game2Hotspots } from './level1FlowData'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
-import { CharacterAvatar } from '../../../shared/components/CharacterAvatar'
 import './level1.css'
 
 export function Game2Profile({ onComplete }) {
@@ -36,8 +35,8 @@ export function Game2Profile({ onComplete }) {
         </div>
         <div className="l1-social-body">
           <div className="l1-social-profile-card">
-            <div className="l1-social-avatar l1-social-avatar-photo" aria-hidden>
-              <CharacterAvatar name="Маша" />
+            <div className="l1-social-avatar" aria-hidden>
+              👤
             </div>
             <div className="l1-social-name">Профиль</div>
 
