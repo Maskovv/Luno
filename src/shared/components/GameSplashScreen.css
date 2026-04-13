@@ -1,0 +1,104 @@
+.game-splash {
+  margin-top: 8px;
+}
+
+.game-splash-card {
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  border-radius: 20px;
+  padding: 22px 20px 20px;
+  border: 1px solid rgba(102, 126, 234, 0.25);
+  box-shadow: 0 8px 28px rgba(102, 126, 234, 0.12);
+}
+
+.game-splash-hero {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.game-splash-avatar-wrap {
+  flex: 0 0 auto;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+}
+
+.game-splash-avatar-wrap .game-splash-avatar.ch-avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.game-splash-avatar-wrap .ch-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.game-splash-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.game-splash-title {
+  font-size: 1.5rem;
+  color: #1a237e;
+  margin: 0 0 12px;
+  font-weight: 800;
+}
+
+.game-splash-p {
+  margin: 0 0 12px;
+  font-size: 1.08rem;
+  line-height: 1.55;
+  color: #333;
+}
+
+.game-splash-bullets {
+  margin: 8px 0 0;
+  padding-left: 1.2rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #37474f;
+}
+
+.game-splash-bullets li {
+  margin-bottom: 8px;
+}
+
+.game-splash-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.game-splash-btn {
+  padding: 14px 32px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #26a69a 0%, #00897b 100%);
+  box-shadow: 0 4px 14px rgba(0, 137, 123, 0.4);
+}
+
+.game-splash-btn:hover {
+  filter: brightness(1.05);
+}
+
+@media (max-width: 560px) {
+  .game-splash-hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .game-splash-bullets {
+    text-align: left;
+  }
+}

@@ -1,0 +1,171 @@
+.statistics-page {
+  min-height: 100vh;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.statistics-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.statistics-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.back-button {
+  padding: 10px 20px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.back-button:hover {
+  background: #e0e0e0;
+}
+
+.statistics-header h1 {
+  color: #333;
+  font-size: 2rem;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.statistics-header .user-account-bar {
+  margin-left: auto;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  color: white;
+}
+
+.stat-value {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.levels-stats {
+  margin-top: 40px;
+}
+
+.levels-stats h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.levels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.level-stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.level-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.level-count {
+  font-size: 1rem;
+  color: #666;
+}
+
+.student-email {
+  font-weight: normal;
+  color: #777;
+  font-size: 0.95rem;
+}
+
+.no-data {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 640px) {
+  .statistics-container {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .statistics-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .statistics-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 18px;
+  }
+
+  .stat-value {
+    font-size: 2.2rem;
+  }
+
+  .levels-stats {
+    margin-top: 24px;
+  }
+
+  .levels-stats h2 {
+    font-size: 1.25rem;
+  }
+
+  .level-stat-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 14px;
+  }
+
+  .level-name {
+    font-size: 1rem;
+  }
+
+  .level-count {
+    font-size: 0.95rem;
+  }
+}
+

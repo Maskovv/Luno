@@ -1,0 +1,2 @@
+export { StatisticsPage } from './StatisticsPage'
+

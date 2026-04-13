@@ -1,0 +1,114 @@
+.l4-card {
+  background: linear-gradient(180deg, #f7f9ff 0%, #eef3ff 100%);
+}
+
+.l4-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.l4-case {
+  border: 2px solid #d6def8;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.l4-case.active {
+  border-color: #5c74d7;
+  box-shadow: 0 0 0 2px rgba(92, 116, 215, 0.2);
+}
+
+.l4-phone,
+.l4-mail,
+.l4-msg-card,
+.l4-pay {
+  border: 1px solid #d7ddf4;
+  border-radius: 12px;
+  background: #f5f7ff;
+  padding: 10px;
+}
+
+.l4-row {
+  margin-bottom: 8px;
+  color: #25305f;
+}
+
+.l4-msg {
+  color: #1e274d;
+  line-height: 1.45;
+}
+
+.l4-pay-bar {
+  background: #e3e9ff;
+  border-radius: 8px;
+  padding: 8px;
+  font-weight: 700;
+  color: #2b3a78;
+}
+
+.l4-pay-body {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.l4-field {
+  border: 1px solid #cfd8f8;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px 10px;
+  color: #6d789f;
+}
+
+.l4-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.l4-choose {
+  border: 1px solid #a9b8ee;
+  background: #eef2ff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #1f2a56;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.l4-choose.active {
+  background: #dfe7ff;
+  border-color: #5c74d7;
+}
+
+.l4-modal {
+  max-width: 520px;
+}
+
+.l4-modal-avatar {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 10px;
+}
+
+.l4-btn-ghost {
+  border: 1px solid #8da0e6;
+  background: #edf2ff;
+  color: #233064;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .l4-pair,
+  .l4-actions {
+    grid-template-columns: 1fr;
+  }
+}

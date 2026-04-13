@@ -1,0 +1,752 @@
+/* Уровень 5 — стилизация под VK + образовательный UI */
+/* Переменные дублируем на контейнер уровня: кнопки вроде «Далее» стоят вне .l5-root (VK-шелл), иначе --vk-green не задан → белый фон + белый текст. */
+
+.level-container.l5-level {
+  --vk-blue: #4a76a8;
+  --vk-blue-dark: #3d6a9a;
+  --vk-bg: #edeef0;
+  --vk-post: #5181b8;
+  --vk-post-dark: #2a5885;
+  --vk-green: #5fb053;
+  --vk-green-hover: #52a047;
+  --vk-text: #2c2d2e;
+  --vk-muted: #656565;
+  --pattern: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='4' y='14' font-size='10' fill='%23c8d4e8'%3E📚%3C/text%3E%3Ctext x='22' y='28' font-size='10' fill='%23c8d4e8'%3E✏️%3C/text%3E%3C/svg%3E");
+}
+
+.l5-game-card {
+  overflow: visible;
+}
+
+.l5-root {
+  --vk-blue: #4a76a8;
+  --vk-blue-dark: #3d6a9a;
+  --vk-bg: #edeef0;
+  --vk-post: #5181b8;
+  --vk-post-dark: #2a5885;
+  --vk-green: #5fb053;
+  --vk-green-hover: #52a047;
+  --vk-text: #2c2d2e;
+  --vk-muted: #656565;
+  --pattern: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='4' y='14' font-size='10' fill='%23c8d4e8'%3E📚%3C/text%3E%3Ctext x='22' y='28' font-size='10' fill='%23c8d4e8'%3E✏️%3C/text%3E%3C/svg%3E");
+}
+
+.l5-vk-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--vk-blue);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 12px 12px 0 0;
+  flex-wrap: wrap;
+}
+
+.l5-vk-logo {
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+}
+
+.l5-vk-search {
+  flex: 1;
+  min-width: 120px;
+  max-width: 320px;
+  background: #224b7a;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.l5-vk-icons {
+  display: flex;
+  gap: 12px;
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+
+.l5-vk-body {
+  background: var(--vk-bg) var(--pattern);
+  background-size: 40px 40px;
+  border-radius: 0 0 12px 12px;
+  padding: 14px;
+  border: 1px solid #d3d9de;
+  border-top: none;
+}
+
+.l5-vk-grid {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .l5-vk-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.l5-profile-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.l5-profile-avatar {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 10px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e3eef7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.l5-profile-avatar .ch-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.l5-profile-name {
+  font-weight: 800;
+  color: var(--vk-blue);
+  font-size: 1.05rem;
+  margin: 0 0 8px;
+}
+
+.l5-profile-meta {
+  font-size: 0.85rem;
+  color: var(--vk-muted);
+  line-height: 1.45;
+  text-align: left;
+}
+
+.l5-profile-icons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 1.25rem;
+  opacity: 0.55;
+}
+
+.l5-feed-title {
+  margin: 0 0 12px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--vk-blue);
+}
+
+.l5-post {
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.l5-post-preview {
+  min-height: 48px;
+  background: linear-gradient(135deg, #e8f0fa 0%, #dce8f5 100%);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--vk-muted);
+  font-size: 0.9rem;
+}
+
+.l5-comment-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: var(--vk-post);
+  color: #fff;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.l5-comment-text {
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.l5-comment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.l5-btn-vk {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: transform 0.1s, opacity 0.15s;
+}
+
+.l5-btn-vk:active {
+  transform: scale(0.98);
+}
+
+.l5-btn-block {
+  background: #5a8fc7;
+  color: #fff;
+}
+
+.l5-btn-block:hover {
+  background: #6a9fd4;
+}
+
+.l5-btn-reply {
+  background: #3d6a9a;
+  color: #fff;
+}
+
+.l5-btn-reply:hover {
+  background: #4a7aad;
+}
+
+.l5-badge-done {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #b8e6b0;
+}
+
+.l5-section-title {
+  font-weight: 800;
+  color: var(--vk-text);
+  margin: 16px 0 10px;
+  font-size: 1rem;
+}
+
+.l5-msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.l5-msg-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--vk-post);
+  color: #fff;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+
+.l5-msg-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  overflow: hidden;
+}
+
+.l5-msg-avatar .ch-avatar {
+  width: 44px;
+  height: 44px;
+}
+
+.l5-msg-avatar .ch-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.l5-msg-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.l5-msg-name {
+  font-weight: 800;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.l5-msg-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 0.95;
+}
+
+.l5-threat-box {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  border-left: 4px solid #e53935;
+}
+
+.l5-threat-box p {
+  margin: 0 0 8px;
+  font-size: 0.88rem;
+  color: var(--vk-text);
+  line-height: 1.45;
+}
+
+.l5-threat-box p:last-child {
+  margin-bottom: 0;
+}
+
+.l5-actions-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.l5-btn-primary {
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 999px;
+  background: var(--vk-green, #5fb053);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.l5-btn-primary:hover {
+  background: var(--vk-green-hover, #52a047);
+}
+
+.l5-btn-outline {
+  background: #fff;
+  color: var(--vk-blue);
+  border: 2px solid var(--vk-blue);
+}
+
+.l5-btn-outline:hover {
+  background: #f0f4f8;
+}
+
+/* Три варианта без «подсветки правильного» — одинаковый стиль */
+.l5-btn-threat {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 2px solid var(--vk-blue);
+  background: #fff;
+  color: var(--vk-blue);
+  font-weight: 800;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.l5-btn-threat:hover {
+  background: #eef3fa;
+}
+
+.l5-btn-threat:active {
+  transform: scale(0.99);
+}
+
+/* Кнопка «Далее» после игры — всегда поверх и заметна */
+.l5-next-bar {
+  position: relative;
+  z-index: 5;
+  margin-top: 20px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #d3d9de;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.l5-next-bar .l5-btn-primary {
+  margin-top: 0;
+  /* запасной фон, если переменная недоступна в каком-то вложении */
+  background: var(--vk-green, #5fb053);
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+.l5-thought-chip-btn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #d0d8e4;
+  background: #fff;
+}
+
+.l5-thought-chip-btn:hover {
+  background: #f5f8fc;
+}
+
+.l5-remove-x {
+  flex-shrink: 0;
+  color: #888;
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.l5-luno-hint-block {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.l5-luno-hint-block.ok {
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  color: #1b5e20;
+}
+
+.l5-luno-hint-block.err {
+  background: #fff3e0;
+  border: 1px solid #ffe0b2;
+  color: #e65100;
+}
+
+.l5-chat-thread {
+  margin-top: 12px;
+  padding: 14px;
+  background: #f5f7fa;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.l5-chat-line {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.l5-chat-line:last-child {
+  margin-bottom: 0;
+}
+
+.l5-chat-line.anya {
+  background: #e3f2fd;
+  border-left: 3px solid #1976d2;
+}
+
+.l5-chat-line.masha {
+  background: #f3e5f5;
+  border-left: 3px solid #7b1fa2;
+}
+
+.l5-chat-line strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.dialogue-bubble p {
+  white-space: pre-line;
+}
+
+/* Модалка */
+.l5-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.l5-modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 20px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+
+.l5-modal-avatar {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 12px;
+}
+
+.l5-modal-avatar .ch-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.l5-modal h3 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  color: var(--vk-text);
+}
+
+.l5-modal p {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.l5-modal .l5-btn-primary {
+  margin-top: 8px;
+}
+
+/* Подсказка Луно под макетом */
+.l5-luno-bar {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.l5-luno-bar.ok {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #c8e6c9;
+}
+
+.l5-luno-bar.err {
+  background: #ffebee;
+  color: #b71c1c;
+  border: 1px solid #ffcdd2;
+}
+
+.l5-luno-bar.neutral {
+  background: #e3f2fd;
+  color: #0d47a1;
+  border: 1px solid #bbdefb;
+}
+
+/* Игра 2 — мысли */
+.l5-thoughts-wrap {
+  margin-top: 8px;
+}
+
+.l5-thoughts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .l5-thoughts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.l5-thought-zone {
+  border-radius: 16px;
+  padding: 14px;
+  min-height: 180px;
+  border: 2px dashed rgba(74, 118, 168, 0.35);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(8px);
+}
+
+.l5-thought-zone h4 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: var(--vk-blue);
+}
+
+.l5-thought-chip {
+  display: block;
+  font-size: 0.82rem;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e6ed;
+  line-height: 1.35;
+}
+
+.l5-thought-pick {
+  margin-top: 14px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #dde4ec;
+}
+
+.l5-thought-pick label {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.88rem;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+/* Игра 3 */
+.l5-game3-posts {
+  margin: 12px 0;
+}
+
+.l5-mini-post {
+  background: var(--vk-post);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.l5-privacy-form {
+  margin-top: 14px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #d3d9de;
+}
+
+.l5-privacy-row {
+  margin-bottom: 14px;
+}
+
+.l5-privacy-row label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--vk-text);
+  margin-bottom: 6px;
+}
+
+.l5-privacy-row select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #c5d0db;
+  font-size: 0.9rem;
+  background: #fafbfc;
+}
+
+/* Финал уровня */
+.l5-final {
+  text-align: center;
+  padding: 28px 20px;
+  border-radius: 16px;
+  background: #4a90e2 var(--pattern);
+  background-size: 40px 40px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.l5-final::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(74, 144, 226, 0.92) 0%, rgba(52, 120, 200, 0.95) 100%);
+  z-index: 0;
+}
+
+.l5-final > * {
+  position: relative;
+  z-index: 1;
+}
+
+.l5-final-mascot {
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.l5-final h2 {
+  margin: 0 0 12px;
+  font-size: 1.35rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.l5-final p {
+  margin: 0 0 20px;
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.98;
+}
+
+.l5-final .l5-btn-primary {
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Заголовок игры над VK-макетом */
+.l5-game-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--vk-text);
+  margin: 0 0 6px;
+}
+
+.l5-game-hint {
+  font-size: 0.92rem;
+  color: var(--vk-muted);
+  margin: 0 0 14px;
+  line-height: 1.45;
+}
+
+/* Диалоги в начале уровня */
+.l5-dialogue-wrap .dialogue-bubble {
+  background: #fff;
+  border: 1px solid #e0e6ed;
+}
+
+.level-container.l5-level {
+  max-width: 960px;
+}
+
+.level-container.l5-level .l2-card {
+  border-radius: 16px;
+  border: 1px solid #e4e9ef;
+  box-shadow: 0 8px 32px rgba(74, 118, 168, 0.12);
+}

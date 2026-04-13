@@ -1,0 +1,218 @@
+.level-selection-page {
+  min-height: 100vh;
+  padding: 28px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.level-selection-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.level-selection-user-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 4;
+}
+
+.level-selection-container h1 {
+  color: white;
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 520px) {
+  .level-selection-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+
+  .teacher-panel {
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+  }
+
+  .teacher-panel h2 {
+    font-size: 1.15rem;
+  }
+
+  .teacher-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .levels-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .level-card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .level-number {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+  }
+}
+
+.teacher-panel {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0 auto 28px;
+  max-width: 900px;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 3;
+}
+
+.teacher-panel h2 {
+  color: #fff;
+  margin-bottom: 14px;
+  font-size: 1.3rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.teacher-panel-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 4;
+}
+
+.teacher-button {
+  padding: 12px 18px;
+  background: #fff;
+  color: #667eea;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  z-index: 5;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+}
+
+.teacher-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+}
+
+.level-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.level-card.unlocked {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.level-card.unlocked:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.level-card.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f0f0f0;
+}
+
+.level-number {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto 20px;
+}
+
+.level-card.locked .level-number {
+  background: #ccc;
+}
+
+.level-card h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.level-card p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.lock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.statistics-button {
+  display: block;
+  margin: 0 auto;
+  padding: 15px 40px;
+  background: white;
+  color: #667eea;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.statistics-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.statistics-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+

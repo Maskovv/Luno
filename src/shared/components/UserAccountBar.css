@@ -1,0 +1,56 @@
+.user-account-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.user-account-bar-email {
+  font-size: 0.88rem;
+  max-width: min(100%, 220px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-account-bar-logout {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+/* Светлый текст на фиолетовом градиенте (уровни, QR) */
+.user-account-bar--light .user-account-bar-email {
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.user-account-bar--light .user-account-bar-logout {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.user-account-bar--light .user-account-bar-logout:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* Тёмный текст на белой карточке (статистика) */
+.user-account-bar--dark .user-account-bar-email {
+  color: #444;
+}
+
+.user-account-bar--dark .user-account-bar-logout {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.user-account-bar--dark .user-account-bar-logout:hover {
+  background: #e5e5e5;
+}
