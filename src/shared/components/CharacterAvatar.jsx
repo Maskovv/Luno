@@ -6,6 +6,12 @@ const byName = {
   Луно: lunoSvg,
   Маша: mashaSvg,
   Ваня: vanyaSvg,
+  Мошенник: vanyaSvg,
+  Тролль: mashaSvg,
+  Рассказчик: lunoSvg,
+  Пользователь: vanyaSvg,
+  Дима: vanyaSvg,
+  Даня: mashaSvg,
   Гид: lunoSvg,
 }
 
