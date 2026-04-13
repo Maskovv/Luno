@@ -504,6 +504,11 @@
   text-align: center;
 }
 
+.l5-modal-chat {
+  max-width: 760px;
+  text-align: left;
+}
+
 .l5-modal-avatar {
   width: 72px;
   height: 72px;
@@ -542,6 +547,7 @@
   border-radius: 10px;
   font-size: 0.92rem;
   line-height: 1.45;
+  white-space: pre-line;
 }
 
 .l5-luno-bar.ok {

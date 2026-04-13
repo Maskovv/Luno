@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { game1EmailHotspots } from './level2FlowData'
+import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
 
 export function Game1PhishingEmail({ onComplete }) {
@@ -114,12 +115,9 @@ export function Game1PhishingEmail({ onComplete }) {
       </p>
 
       {done && (
-        <div className="l2-win">
-          <p>Отлично! Ты заметил признаки фишинга в письме.</p>
-          <button type="button" className="l2-primary" onClick={onComplete}>
-            Продолжить
-          </button>
-        </div>
+        <LunoVictoryScreen title="Отлично!" onContinue={onComplete} continueLabel="Вперёд">
+          <p>Ты заметил признаки фишинга в письме.</p>
+        </LunoVictoryScreen>
       )}
     </div>
   )

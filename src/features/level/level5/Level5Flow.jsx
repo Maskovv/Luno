@@ -4,6 +4,7 @@ import { useAuth } from '../../auth'
 import { completeLevel as completeLevelInDb, getLevelState, setLevelStep } from '../../../shared/api/firestoreProgress'
 import { CharacterAvatar } from '../../../shared/components/CharacterAvatar'
 import { TeacherStepSkip } from '../../../shared/components/TeacherStepSkip'
+import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import '../LevelPage.css'
 import '../level2/level2.css'
 import './level5.css'
@@ -12,8 +13,44 @@ const LEVEL_ID = '5'
 const TITLE = 'Уровень 5. Кибербуллинг'
 
 const flow = [
-  { t: 'd', c: 'Маша', x: 'Они начали писать про меня... сначала шутили, а теперь не останавливаются.' },
-  { t: 'd', c: 'Луно', x: 'Вы столкнулись с кибербуллингом — травлей в сети. Поможем Маше защитить себя.' },
+  { t: 'd', c: 'Маша', x: 'Маша сидит, уткнувшись в телефон.' },
+  { t: 'd', c: 'Маша', x: 'Телефон в её руках вибрирует от уведомлений. Маша начинает плакать.' },
+  { t: 'd', c: 'Ваня', x: '— Маш… ты чего? Что случилось?' },
+  { t: 'd', c: 'Маша', x: ['— Они… начали писать про меня…', 'Сначала просто шутили…', 'А теперь это не останавливается…'] },
+  {
+    t: 'd',
+    c: 'Маша',
+    x: [
+      'Пост Маши → под ним комментарии:',
+      '• «Это кринж»',
+      '• «Ты вообще видела себя?»',
+      '• «Удались отсюда»',
+      '• «Смешно даже смотреть»',
+    ],
+  },
+  { t: 'd', c: 'Маша', x: '— Я не знаю, что делать…' },
+  { t: 'd', c: 'Ваня', x: '— Это уже не шутки…' },
+  {
+    t: 'd',
+    c: 'Луно',
+    x: [
+      '— Вы столкнулись с кибербуллингом.',
+      'Этот термин состоит из двух частей: Кибер — связанный с компьютерами, Буллинг — травля.',
+      'Вместе — кибербуллинг: травля в сети.',
+    ],
+  },
+  {
+    t: 'd',
+    c: 'Луно',
+    x: [
+      '— В соцсетях очень удобно общаться с разными людьми — но и травить становится намного проще.',
+      '— Кибербуллинг может выглядеть как:',
+      '• Оскорбления',
+      '• Насмешки',
+      '• Давление, угрозы',
+      '• Распространение неприятной информации',
+    ],
+  },
   { t: 'game1' },
   { t: 'game2' },
   { t: 'd', c: 'Маша', x: '— Значит… это не потому, что со мной что-то не так?..' },
@@ -194,13 +231,46 @@ function VkShell({ children, title = 'Профиль' }) {
   )
 }
 
+function LunoPopup({ title = 'Луно', lines = [], chat = [], onClose, buttonLabel = 'Попробовать снова' }) {
+  return (
+    <div className="l5-modal-backdrop" role="dialog" aria-modal="true">
+      <div className={`l5-modal ${chat.length ? 'l5-modal-chat' : ''}`}>
+        <div className="l5-modal-avatar">
+          <CharacterAvatar name="Луно" />
+        </div>
+        <h3>{title}</h3>
+        {chat.length > 0 && (
+          <div className="l5-msg-list">
+            {chat.map((item, idx) => (
+              <div key={`${item.who}_${idx}`} className="l5-msg-card" style={{ background: item.who === 'Тролль' ? 'var(--vk-post-dark)' : 'var(--vk-post)' }}>
+                <div className="l5-msg-avatar"><CharacterAvatar name={item.who === 'Тролль' ? 'Луно' : 'Маша'} /></div>
+                <div className="l5-msg-body">
+                  <div className="l5-msg-name">{item.who}</div>
+                  <div className="l5-msg-text">{item.text}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {lines.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+        <button type="button" className="l5-btn-primary" style={{ marginTop: 8 }} onClick={onClose}>
+          {buttonLabel}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function Game1({ onNext }) {
   const [blocked, setBlocked] = useState([])
   const [msg, setMsg] = useState('')
-  const [showBadDialog, setShowBadDialog] = useState(false)
+  const [popup, setPopup] = useState(null)
   const [phase, setPhase] = useState('comments')
   const [dmState, setDmState] = useState({ trollBlocked: false, friendReplied: false })
   const [threatDone, setThreatDone] = useState(false)
+  const [friendDialogOpen, setFriendDialogOpen] = useState(false)
 
   const block = (c) => {
     if (blocked.includes(c)) return
@@ -212,9 +282,19 @@ function Game1({ onNext }) {
     }
   }
 
-  const reply = () => {
-    setShowBadDialog(true)
-    setMsg('Луно: Ответ может усилить конфликт. Иногда лучше не вовлекаться.')
+  const replyToHater = () => {
+    setPopup({
+      title: 'Луно',
+      chat: [
+        { who: 'Маша', text: 'Зачем вы это пишите! Сами не лучше!' },
+        { who: 'Тролль', text: 'Хаха, ты ещё заплачь! Ты всегда будешь посмешыщем!' },
+      ],
+      lines: [
+        '— Ответ может усилить конфликт.',
+        'Иногда лучше не вступать в диалог. Да и зачем тратить на это своё время?',
+      ],
+      buttonLabel: 'Попробовать снова',
+    })
   }
 
   const doneDm = dmState.trollBlocked && dmState.friendReplied
@@ -222,14 +302,22 @@ function Game1({ onNext }) {
   const threatChoice = (type) => {
     if (type === 'parents') {
       setThreatDone(true)
-      setMsg('Луно: Верно. При угрозах и сливе личных данных важно сразу рассказать родителям.')
+      setMsg('')
       return
     }
     if (type === 'find') {
-      setMsg('Луно: Вероятнее всего, это не поможет избавиться от угроз. Безопаснее звать взрослых.')
+      setPopup({
+        title: 'Луно',
+        lines: ['— В такой ситуации лучше не расследовать самому.', '— Безопаснее сразу рассказать родителям и действовать вместе.'],
+        buttonLabel: 'Попробовать снова',
+      })
       return
     }
-    setMsg('Луно: Блокировка важна, но при угрозах и сливе данных этого может быть недостаточно.')
+    setPopup({
+      title: 'Луно',
+      lines: ['— Одной блокировки может быть недостаточно.', '— При угрозах и сливе данных обязательно подключай взрослых.'],
+      buttonLabel: 'Попробовать снова',
+    })
   }
 
   const threatComments = [
@@ -238,6 +326,18 @@ function Game1({ onNext }) {
     'Будешь выпендриваться — я всем расскажу твой секрет. Тогда мы все над тобой посмеёмся.',
     'В 33 школе все такие глупые, как ты?',
   ]
+
+  if (threatDone) {
+    return (
+      <LunoVictoryScreen title="Отлично!" onContinue={onNext} continueLabel="Вперёд">
+        <p>Ты выбрал безопасные действия и помог Маше защититься от травли и угроз.</p>
+        <p>— Если тролли не просто издеваются, а 1) Угрожают; 2) Раскрывают личное (адрес, номер телефона, ...); 3) Создают новые аккаунты — лучше не тянуть и рассказать родителям, и вместе с ними решить, что делать дальше.</p>
+        <p>— Очень важно помнить: слова незнакомых людей в интернете не определяют вашу ценность.</p>
+        <p>— В такие моменты особенно нужна поддержка — друзей, близких, тех, кому вы доверяете.</p>
+        <p>— Не стоит замыкаться в телефоне и снова перечитывать неприятные сообщения. Гораздо полезнее переключиться: выйти на улицу, поговорить, провести время с друзьями или семьёй.</p>
+      </LunoVictoryScreen>
+    )
+  }
 
   return (
     <div className="l2-card l5-game-card">
@@ -279,7 +379,7 @@ function Game1({ onNext }) {
                           <button type="button" className="l5-btn-vk l5-btn-block" onClick={() => block(c)}>
                             Заблокировать
                           </button>
-                          <button type="button" className="l5-btn-vk l5-btn-reply" onClick={reply}>
+                          <button type="button" className="l5-btn-vk l5-btn-reply" onClick={replyToHater}>
                             Ответить
                           </button>
                         </>
@@ -310,7 +410,7 @@ function Game1({ onNext }) {
                       <button
                         type="button"
                         className="l5-btn-vk l5-btn-reply"
-                        onClick={() => setMsg('Луно: Спорить с троллями бесполезно, они только этого и ждут.')}
+                        onClick={replyToHater}
                       >
                         Ответить
                       </button>
@@ -330,7 +430,14 @@ function Game1({ onNext }) {
                       <button
                         type="button"
                         className="l5-btn-vk l5-btn-block"
-                        onClick={() => setDmState((s) => ({ ...s, friendReplied: true }))}
+                        onClick={() => setMsg('Луно: Ваня тебя поддерживает. Блокировать друга не нужно.')}
+                      >
+                        Заблокировать
+                      </button>
+                      <button
+                        type="button"
+                        className="l5-btn-vk l5-btn-reply"
+                        onClick={() => setFriendDialogOpen(true)}
                         disabled={dmState.friendReplied}
                       >
                         {dmState.friendReplied ? '✓ Ответил' : 'Ответить'}
@@ -372,34 +479,85 @@ function Game1({ onNext }) {
         </div>
       </VkShell>
 
-      {showBadDialog && (
+      {popup && (
+        <LunoPopup
+          title={popup.title}
+          lines={popup.lines}
+          buttonLabel={popup.buttonLabel}
+          onClose={() => setPopup(null)}
+        />
+      )}
+      {friendDialogOpen && (
         <div className="l5-modal-backdrop" role="dialog" aria-modal="true">
-          <div className="l5-modal">
-            <div className="l5-modal-avatar">
-              <CharacterAvatar name="Луно" />
+          <div className="l5-modal l5-modal-chat">
+            <div className="l5-msg-list">
+              <p className="l5-section-title">Личные сообщения</p>
+              <div className="l5-msg-card" style={{ background: 'var(--vk-post-dark)' }}>
+                <div className="l5-msg-avatar"><CharacterAvatar name="Ваня" /></div>
+                <div className="l5-msg-body">
+                  <div className="l5-msg-name">Ваня</div>
+                  <div className="l5-msg-text">Привет, Маша, как ты? Ты быстро ушла домой после школы, всё в порядке?</div>
+                </div>
+              </div>
+              <div className="l5-msg-card">
+                <div className="l5-msg-avatar"><CharacterAvatar name="Маша" /></div>
+                <div className="l5-msg-body">
+                  <div className="l5-msg-name">Маша</div>
+                  <div className="l5-msg-text">Меня достали эти тролли…</div>
+                </div>
+              </div>
+              <div className="l5-msg-card" style={{ background: 'var(--vk-post-dark)' }}>
+                <div className="l5-msg-avatar"><CharacterAvatar name="Ваня" /></div>
+                <div className="l5-msg-body">
+                  <div className="l5-msg-name">Ваня</div>
+                  <div className="l5-msg-text">Всё ещё написывают?</div>
+                </div>
+              </div>
+              <div className="l5-msg-card">
+                <div className="l5-msg-avatar"><CharacterAvatar name="Маша" /></div>
+                <div className="l5-msg-body">
+                  <div className="l5-msg-name">Маша</div>
+                  <div className="l5-msg-text">Да… я уже не могу. Может, они правы…</div>
+                </div>
+              </div>
+              <div className="l5-msg-card" style={{ background: 'var(--vk-post-dark)' }}>
+                <div className="l5-msg-avatar"><CharacterAvatar name="Ваня" /></div>
+                <div className="l5-msg-body">
+                  <div className="l5-msg-name">Ваня</div>
+                  <div className="l5-msg-text">Да не слушай ты их. Пойдём лучше погуляем?</div>
+                </div>
+              </div>
+              <div className="l5-msg-card">
+                <div className="l5-msg-avatar"><CharacterAvatar name="Маша" /></div>
+                <div className="l5-msg-body">
+                  <div className="l5-msg-name">Маша</div>
+                  <div className="l5-msg-text">Да, пошли. Зайдёшь за мной в 16:30?</div>
+                </div>
+              </div>
+              <div className="l5-msg-card" style={{ background: 'var(--vk-post-dark)' }}>
+                <div className="l5-msg-avatar"><CharacterAvatar name="Ваня" /></div>
+                <div className="l5-msg-body">
+                  <div className="l5-msg-name">Ваня</div>
+                  <div className="l5-msg-text">Да, без проблем!</div>
+                </div>
+              </div>
             </div>
-            <h3>Неприятный диалог</h3>
-            <p>
-              <strong>Маша:</strong> Зачем вы это пишете! Сами не лучше!
-            </p>
-            <p>
-              <strong>Тролль:</strong> Хаха, ты ещё заплачь! Ты всегда будешь посмешищем!
-            </p>
-            <button type="button" className="l5-btn-threat" style={{ marginTop: 8 }} onClick={() => setShowBadDialog(false)}>
-              Попробовать снова
+            <button
+              type="button"
+              className="l5-btn-primary"
+              onClick={() => {
+                setFriendDialogOpen(false)
+                setDmState((s) => ({ ...s, friendReplied: true }))
+                setMsg('')
+              }}
+            >
+              Завершить диалог
             </button>
           </div>
         </div>
       )}
 
       {msg && <LunoMsg text={msg} />}
-      {threatDone && (
-        <div className="l5-next-bar">
-          <button type="button" className="l5-btn-primary" onClick={onNext}>
-            Далее
-          </button>
-        </div>
-      )}
     </div>
   )
 }
@@ -442,6 +600,14 @@ function Game2({ onNext }) {
 
   const done = left.length + right.length === all.length
   const ok = wrongThoughts.every((x) => left.includes(x)) && healthyThoughts.every((x) => right.includes(x))
+
+  if (done && ok) {
+    return (
+      <LunoVictoryScreen title="Молодец!" onContinue={onNext} continueLabel="Вперёд">
+        <p>Ты правильно разделил мысли и показал, как поддерживать себя в сложной ситуации.</p>
+      </LunoVictoryScreen>
+    )
+  }
 
   return (
     <div className="l2-card l5-game-card">
@@ -494,22 +660,9 @@ function Game2({ onNext }) {
             ))}
           </div>
           {done && !ok && <p className="l2-err" style={{ marginTop: 12 }}>Есть ошибки. Убери лишние мысли из колонок и распредели заново.</p>}
-          {done && ok && (
-            <div className="l5-post" style={{ marginTop: 14, textAlign: 'center' }}>
-              <p style={{ margin: '0 0 12px', color: 'var(--vk-text)' }}>
-                Отлично! Дело не в Маше — важно поддерживать себя и просить помощи.
-              </p>
-            </div>
-          )}
+          {done && ok && null}
         </div>
       </VkShell>
-      {done && ok && (
-        <div className="l5-next-bar">
-          <button type="button" className="l5-btn-primary" onClick={onNext}>
-            Далее
-          </button>
-        </div>
-      )}
     </div>
   )
 }
@@ -523,11 +676,20 @@ function Game3({ onNext }) {
     geo: '',
   })
   const [msg, setMsg] = useState('')
+  const [popup, setPopup] = useState(null)
   const donePrivacy =
     ['Все друзья', 'Некоторые друзья'].includes(privacy.dm) &&
     ['Все друзья', 'Только я', 'Некоторые друзья'].includes(privacy.comments) &&
     ['Все друзья', 'Только я', 'Некоторые друзья'].includes(privacy.posts) &&
     ['Только я', 'Некоторые друзья'].includes(privacy.geo)
+
+  if (donePrivacy) {
+    return (
+      <LunoVictoryScreen title="Отличная работа!" onContinue={onNext} continueLabel="Вперёд">
+        <p>Ты помог настроить приватность и сделать страницу Ани безопаснее.</p>
+      </LunoVictoryScreen>
+    )
+  }
 
   return (
     <div className="l2-card">
@@ -564,10 +726,30 @@ function Game3({ onNext }) {
                   <strong>Тролль:</strong> «Типо крутая, была в Москве… Красная площадь не исправит фото с твоим лицом»
                 </div>
                 <div className="l5-actions-stack">
-                  <button type="button" className="l5-btn-threat" onClick={() => setMsg('Луно: Поддерживать тролля — точно не вариант.')}>
+                  <button
+                    type="button"
+                    className="l5-btn-threat"
+                    onClick={() =>
+                      setPopup({
+                        title: 'Луно',
+                        lines: ['— Поддерживать тролля — точно не вариант.'],
+                        buttonLabel: 'Попробовать снова',
+                      })
+                    }
+                  >
                     Поддержать тролля
                   </button>
-                  <button type="button" className="l5-btn-threat" onClick={() => setMsg('Луно: Спорить с троллями бесполезно, они только этого и ждут.')}>
+                  <button
+                    type="button"
+                    className="l5-btn-threat"
+                    onClick={() =>
+                      setPopup({
+                        title: 'Луно',
+                        lines: ['— Спорить с троллями бесполезно, они только этого и ждут.'],
+                        buttonLabel: 'Попробовать снова',
+                      })
+                    }
+                  >
                     Поддержать Аню в споре
                   </button>
                   <button
@@ -649,16 +831,7 @@ function Game3({ onNext }) {
                     <option>Некоторые друзья</option>
                   </select>
                 </div>
-                {donePrivacy && (
-                  <p className="l2-ok" style={{ marginTop: 8 }}>
-                    Луно: Ты молодец! Благодаря тебе Аня в большей безопасности.
-                  </p>
-                )}
-                {donePrivacy ? (
-                  <button type="button" className="l5-btn-primary" style={{ marginTop: 12 }} onClick={onNext}>
-                    Завершить
-                  </button>
-                ) : (
+                {donePrivacy ? null : (
                   <p className="l2-err" style={{ marginBottom: 0 }}>
                     Подбери более безопасные настройки для всех пунктов.
                   </p>
@@ -668,6 +841,14 @@ function Game3({ onNext }) {
           </main>
         </div>
       </VkShell>
+      {popup && (
+        <LunoPopup
+          title={popup.title}
+          lines={popup.lines}
+          buttonLabel={popup.buttonLabel}
+          onClose={() => setPopup(null)}
+        />
+      )}
       {msg && <LunoMsg text={msg} />}
     </div>
   )
@@ -734,7 +915,9 @@ export function Level5Flow() {
               <div className="avatar-circle l2-avatar-photo"><CharacterAvatar name={item.c} /></div>
               <div className="character-name">{item.c}</div>
             </div>
-            <div className="dialogue-bubble"><p>{item.x}</p></div>
+            <div className="dialogue-bubble">
+              {Array.isArray(item.x) ? item.x.map((line, i) => <p key={i}>{line}</p>) : <p>{item.x}</p>}
+            </div>
             <div className="level-actions"><button type="button" className="next-button" onClick={next}>Далее →</button></div>
           </div>
         )}

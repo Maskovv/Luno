@@ -73,6 +73,14 @@
   font-weight: 700;
 }
 
+.l2-test-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+}
+
 .l2-ok {
   margin-top: 10px;
   color: #2e7d32;

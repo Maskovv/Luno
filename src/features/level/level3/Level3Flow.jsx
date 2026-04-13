@@ -9,6 +9,7 @@ import {
 } from '../../../shared/api/firestoreProgress'
 import { CharacterAvatar } from '../../../shared/components/CharacterAvatar'
 import { TeacherStepSkip } from '../../../shared/components/TeacherStepSkip'
+import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import '../LevelPage.css'
 import '../level2/level2.css'
 import './level3.css'
@@ -17,11 +18,33 @@ const LEVEL_ID = '3'
 const TITLE = 'Уровень 3. Вирусы и вредоносные программы'
 
 const flow = [
-  { t: 'd', c: 'Ваня', x: 'О, я нашёл игру, в которую сейчас все друзья играют! Сейчас скачаю!' },
-  { t: 'd', c: 'Луно', x: 'Похоже, на устройство попала вредоносная программа. Такие программы называются вирусами.' },
+  { t: 'd', c: 'Ваня', x: '— О, я наконец-то нашёл игру, в которою сейчас все друзья играют! Сейчас скачаю!' },
+  { t: 'd', c: 'Ваня', x: 'Скачивает файл. Экран «глючит».' },
+  { t: 'd', c: 'Дима', x: '— А ты уверен, что с этого сайта можно скачивать? Сайт выглядит подозрительно…помнишь, что Луно говорил…' },
+  { t: 'd', c: 'Дима', x: 'Появляются всплывающие окна, реклама, зависания. — Вань… у тебя что-то странное происходит…' },
+  { t: 'd', c: 'Луно', x: ['— Похоже, на устройство попала вредоносная программа.', '— Такие программы называются вирусами.'] },
   { t: 'theory' },
   { t: 'maze' },
+  {
+    t: 'd',
+    c: 'Луно',
+    x: [
+      '— Поздравляю! 🎉',
+      'Теперь вы знаете, как защитить себя от вирусов.',
+      '— Помните:',
+      'ваши знания могут помочь не только вам, но и вашим друзьям.',
+      '— Делитесь ими и будьте внимательны в интернете.',
+    ],
+  },
   { t: 'rules' },
+  {
+    t: 'd',
+    c: 'Луно',
+    x: [
+      '— Сейчас вы попробуете настроить безопасность устройства на практике.',
+      '— Ваша задача — сделать компьютер максимально защищённым.',
+    ],
+  },
   { t: 'safepc' },
   { t: 'test' },
 ]
@@ -202,20 +225,69 @@ function shuffleArray(items) {
 }
 
 function Theory({ onNext }) {
+  const [idx, setIdx] = useState(0)
+  const cur = virusCards[idx]
+  const isLast = idx >= virusCards.length - 1
+  const visualTitleById = {
+    '1) Вирус': 'Подозрительные файлы',
+    '2) Шпионская программа': 'Утечка данных',
+    '3) Программа-вымогатель': 'Блокировка экрана',
+    '4) Рекламное ПО': 'Навязчивая реклама',
+    '5) Троян': 'Фальшивое приложение',
+  }
+  const visualIconById = {
+    '1) Вирус': '🧬',
+    '2) Шпионская программа': '🕵️',
+    '3) Программа-вымогатель': '🔒',
+    '4) Рекламное ПО': '📢',
+    '5) Троян': '🐴',
+  }
   return (
-    <div className="l2-card">
+    <div className="l2-card l3-theory-carousel">
       <h2 className="l2-title">Типы вредоносных программ</h2>
-      <div className="l2-grid">
-        {virusCards.map((v) => (
-          <div key={v.title} className="l2-cons l2-cons-open">
-            <div className="l2-cons-title">{v.title}</div>
-            <div className="l2-cons-body">{v.desc}</div>
-            <div className="l2-cons-body"><strong>Как заметить:</strong> {v.detect.join(', ')}</div>
-            <div className="l2-cons-body"><strong>Как защититься:</strong> {v.protect.join(', ')}</div>
+      <div className="l3-slide">
+        <div className="l3-slide-copy">
+          <div className="l2-cons-title">{cur.title}</div>
+          <p className="l3-luno-lead">Луно:</p>
+          <p className="l3-luno-line">— {cur.desc}</p>
+          <p className="l3-luno-line">— Она может:</p>
+          <ul className="l3-luno-list">
+            {cur.detect.map((d) => (
+              <li key={d}>{d}</li>
+            ))}
+          </ul>
+          <p className="l3-luno-line"><strong>Как защититься:</strong> {cur.protect.join(', ')}</p>
+        </div>
+        <div className="l3-slide-visual" aria-hidden>
+          <div className="l3-slide-device">
+            <div className="l3-slide-chip">Признаки угрозы в интернете</div>
+            <div className="l3-slide-hero" aria-hidden>{visualIconById[cur.title] || '⚠️'}</div>
+            <div className="l3-slide-main">{visualTitleById[cur.title] || 'Проверка безопасности'}</div>
+            <div className="l3-slide-mini">Пример {idx + 1} из {virusCards.length}</div>
+            <div className="l3-slide-points">
+              {cur.detect.slice(0, 2).map((d) => (
+                <div key={d}>• {d}</div>
+              ))}
+            </div>
           </div>
-        ))}
+        </div>
       </div>
-      <button type="button" className="l2-primary" onClick={onNext}>К игре 1</button>
+      <div className="l3-slide-actions">
+        {idx > 0 && (
+          <button type="button" className="l3-arrow-btn" onClick={() => setIdx((s) => s - 1)} aria-label="Предыдущий слайд">
+            ←
+          </button>
+        )}
+        {!isLast ? (
+          <button type="button" className="l3-arrow-btn" onClick={() => setIdx((s) => s + 1)} aria-label="Следующий слайд">
+            →
+          </button>
+        ) : (
+          <button type="button" className="l2-primary" onClick={onNext}>
+            К игре
+          </button>
+        )}
+      </div>
     </div>
   )
 }
@@ -291,6 +363,7 @@ function MazeGame({ onNext }) {
   const [hint, setHint] = useState(
     'Коридор к выходу в одну клетку; от него отходят тупики. Обезвредь все 5 угроз на пути к финишу.',
   )
+  const [done, setDone] = useState(false)
 
   const cpMap = useMemo(() => {
     const m = new Map()
@@ -320,7 +393,7 @@ function MazeGame({ onNext }) {
     } else if (nx === finish.x && ny === finish.y) {
       const allResolved = checkpoints.every((c) => resolved[c.id])
       if (allResolved) {
-        onNext()
+        setDone(true)
       } else {
         setHint('До выхода дошли, но не все угрозы обезврежены.')
       }
@@ -346,6 +419,14 @@ function MazeGame({ onNext }) {
 
   const allResolved = checkpoints.every((c) => resolved[c.id])
 
+  if (done) {
+    return (
+      <LunoVictoryScreen title="Отлично!" onContinue={onNext} continueLabel="Вперёд">
+        <p>Лабиринт пройден, все угрозы обезврежены.</p>
+      </LunoVictoryScreen>
+    )
+  }
+
   return (
     <div className="l2-card l3-cyber">
       <h2 className="l2-title">Игра 1: Лабиринт угроз</h2>
@@ -354,7 +435,7 @@ function MazeGame({ onNext }) {
         встречаются угрозы; ответвления ведут в тупики. Обезвредь все 5 угроз и дойди до зелёной клетки.
       </p>
 
-      <div className="l3-maze-wrap">
+      <div className="l3-maze-wrap l3-maze-wrap-side">
         <div className="l3-maze-grid" style={{ gridTemplateColumns: `repeat(${W}, 1fr)` }}>
           {Array.from({ length: W * H }).map((_, i) => {
             const x = i % W
@@ -419,33 +500,77 @@ function MazeGame({ onNext }) {
         </div>
       )}
 
-      {allResolved && pos.x === finish.x && pos.y === finish.y && (
-        <div className="l2-win">
-          <p>Отлично! Лабиринт пройден, все угрозы обезврежены.</p>
-          <button type="button" className="l2-primary" onClick={onNext}>
-            Продолжить
-          </button>
-        </div>
-      )}
+      {allResolved && pos.x === finish.x && pos.y === finish.y && null}
     </div>
   )
 }
 
 function Rules({ onNext }) {
-  const rules = [
-    'Скачивай файлы только с надёжных источников.',
-    'Не открывай подозрительные ссылки и вложения.',
-    'Проверяй файлы через антивирус / VirusTotal.',
-    'Обновляй систему и приложения.',
-    'Проверяй доступы приложений.',
-    'Не вводи данные на подозрительных сайтах.',
-    'Следи за странным поведением устройства.',
+  const slides = [
+    [
+      '— Есть универсальные правила безопасного поведения.',
+      'Если вы будете их соблюдать, риск заражения станет намного ниже.',
+      'Общие правила:',
+    ],
+    [
+      '1. Скачивай файлы только из надёжных источников.',
+      '— Используй официальные сайты и проверенные платформы.',
+      '— Не доверяй «бесплатным версиям» и неизвестным ссылкам.',
+    ],
+    [
+      '2. Не открывай подозрительные файлы и ссылки.',
+      '— Особенно если они пришли от незнакомых людей.',
+      '— Используй VirusTotal для проверки наличия вирусов, червей, троянов и других вредоносных програм.',
+    ],
+    ['3. Используй хороший антивирус, далеко не все действительно поиогают.'],
+    [
+      '4. Обновляй систему и приложения.',
+      '— Обновления закрывают уязвимости, которыми пользуются вирусы.',
+    ],
+    [
+      '5. Не устанавливай сомнительные программы.',
+      '— Обращай внимание на: название, источник, разрешения.',
+    ],
+    ['6. Проверяй, какие доступы запрашивает приложение.'],
+    [
+      '7. Не вводи данные на подозрительных сайтах.',
+      '— Пароли и личную информацию вводи только на проверенных ресурсах.',
+    ],
+    [
+      '8. Будь внимателен к поведению устройства.',
+      '— Если оно тормозит, появляются окна, что-то открывается само — это может быть признаком вируса.',
+    ],
   ]
+  const [idx, setIdx] = useState(0)
+  const isLast = idx >= slides.length - 1
   return (
     <div className="l2-card">
       <h2 className="l2-title">Универсальные правила</h2>
-      <ul className="l2-list">{rules.map((r) => <li key={r}>{r}</li>)}</ul>
-      <button type="button" className="l2-primary" onClick={onNext}>К игре 2</button>
+      <div className="dialogue-section">
+        <div className="character-avatar">
+          <div className="avatar-circle l2-avatar-photo"><CharacterAvatar name="Луно" /></div>
+          <div className="character-name">Луно</div>
+        </div>
+        <div className="dialogue-bubble">
+          {slides[idx].map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+      </div>
+      <div className="l3-slide-actions">
+        {idx > 0 && (
+          <button type="button" className="l3-arrow-btn" onClick={() => setIdx((s) => s - 1)} aria-label="Предыдущая реплика">
+            ←
+          </button>
+        )}
+        {!isLast ? (
+          <button type="button" className="l3-arrow-btn" onClick={() => setIdx((s) => s + 1)} aria-label="Следующая реплика">
+            →
+          </button>
+        ) : (
+          <button type="button" className="l2-primary" onClick={onNext}>К игре</button>
+        )}
+      </div>
     </div>
   )
 }
@@ -459,109 +584,108 @@ function SafePc({ onNext }) {
     geo: true,
   })
   const [fileSafe, setFileSafe] = useState({ game: false, hw: false })
+  const [antivirusOn, setAntivirusOn] = useState(false)
   const [checkedFiles, setCheckedFiles] = useState({})
+  const [appOpen, setAppOpen] = useState('antivirus')
   const donePerms = !perms.camera && !perms.messages && !perms.files && !perms.geo
   const doneFiles = fileSafe.game && fileSafe.hw
-  const done = stage >= 4 && donePerms && doneFiles
+  const done = stage >= 5 && donePerms && doneFiles && antivirusOn
   return (
     <div className="l2-card l3-cyber">
       <h2 className="l2-title">Игра 2: Безопасный компьютер</h2>
       <p className="l2-sub">Сделай устройство максимально защищённым.</p>
 
-      <div className="l3-steps">
-        <button type="button" className={`l3-step ${stage >= 1 ? 'ok' : ''}`} onClick={() => setStage(1)}>
-          Антивирус
-        </button>
-        <button type="button" className={`l3-step ${donePerms ? 'ok' : ''}`} onClick={() => setStage(2)}>
-          Доступы приложения
-        </button>
-        <button type="button" className={`l3-step ${doneFiles ? 'ok' : ''}`} onClick={() => setStage(3)}>
-          Проверка файлов
-        </button>
-        <button type="button" className={`l3-step ${stage >= 4 ? 'ok' : ''}`} onClick={() => setStage(4)}>
-          Обновление системы
-        </button>
+      <div className="l3-desktop">
+        <div className="l3-desktop-icons">
+          <button type="button" className={`l3-app ${stage >= 1 ? 'ok' : ''}`} onClick={() => { setAppOpen('antivirus'); setStage((s) => Math.max(s, 1)) }}>🛡 Антивирус</button>
+          <button type="button" className={`l3-app ${donePerms ? 'ok' : ''}`} onClick={() => { setAppOpen('settings'); setStage((s) => Math.max(s, 2)) }}>⚙ Настройки</button>
+          <button type="button" className={`l3-app ${doneFiles ? 'ok' : ''}`} onClick={() => { setAppOpen('files'); setStage((s) => Math.max(s, 3)) }}>📁 Папка с файлами</button>
+          <button type="button" className={`l3-app ${stage >= 5 ? 'ok' : ''}`} onClick={() => { setAppOpen('update'); setStage((s) => Math.max(s, 4)) }}>🔄 Обновление</button>
+        </div>
+        <div className="l3-desktop-window">
+          {appOpen === 'antivirus' && (
+            <div className="l3-panel">
+              <h3>ДЕЙСТВИЕ 1: АНТИВИРУС</h3>
+              <p>Антивирус выключен. Нужно включить антивирус и запустить проверку.</p>
+              <button type="button" className="l2-primary" onClick={() => setAntivirusOn(true)}>
+                {antivirusOn ? 'Антивирус включен' : 'Включить антивирус'}
+              </button>
+            </div>
+          )}
+          {appOpen === 'settings' && (
+            <div className="l3-panel">
+              <h3>ДЕЙСТВИЕ 2: ПРОВЕРКА ПРИЛОЖЕНИЯ</h3>
+              <p>Проверь доступы и отключи лишние.</p>
+              {Object.keys(perms).map((k) => (
+                <label key={k} className="l2-opt">
+                  <input
+                    type="checkbox"
+                    checked={perms[k]}
+                    onChange={(e) => setPerms({ ...perms, [k]: e.target.checked })}
+                  />
+                  {k}
+                </label>
+              ))}
+            </div>
+          )}
+          {appOpen === 'files' && (
+            <div className="l3-panel">
+              <h3>ДЕЙСТВИЕ 3: ПРОВЕРКА ФАЙЛОВ</h3>
+              <p>Открой браузер VirusTotal и проверь файлы.</p>
+              <div className="l3-file-list">
+                {[
+                  { id: 'game', name: 'game_free.exe', result: 'обнаружена угроза' },
+                  { id: 'hw', name: 'homework.pdf', result: 'файл безопасен' },
+                ].map((f) => (
+                  <div key={f.id} className="l3-file-row">
+                    <span>{f.name}</span>
+                    <button
+                      type="button"
+                      className="l3-file-btn"
+                      onClick={() => {
+                        setCheckedFiles((prev) => ({ ...prev, [f.id]: true }))
+                        if (f.id === 'game') setFileSafe((prev) => ({ ...prev, game: false }))
+                        if (f.id === 'hw') setFileSafe((prev) => ({ ...prev, hw: true }))
+                      }}
+                    >
+                      Проверить
+                    </button>
+                    <span className="l3-file-status">
+                      {checkedFiles[f.id] ? f.result : 'не проверен'}
+                      {f.id === 'game' && checkedFiles[f.id] && !fileSafe.game && (
+                        <button
+                          type="button"
+                          className="l3-file-btn l3-file-btn-danger"
+                          onClick={() => setFileSafe((prev) => ({ ...prev, game: true }))}
+                        >
+                          Удалить
+                        </button>
+                      )}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {appOpen === 'update' && (
+            <div className="l3-panel">
+              <h3>ДЕЙСТВИЕ 4: ОБНОВЛЕНИЕ</h3>
+              <p>Уведомление: «Доступно обновление системы».</p>
+              <button type="button" className="l2-primary" onClick={() => setStage(5)}>
+                Обновить систему
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {stage === 1 && (
-        <div className="l3-panel">
-          <h3>Антивирус выключен</h3>
-          <button type="button" className="l2-primary" onClick={() => setStage(2)}>
-            Провести проверку и устранить угрозы
-          </button>
-        </div>
-      )}
-
-      {stage === 2 && (
-        <div className="l3-panel">
-          <h3>Проверь разрешения приложения</h3>
-          {Object.keys(perms).map((k) => (
-            <label key={k} className="l2-opt">
-              <input
-                type="checkbox"
-                checked={perms[k]}
-                onChange={(e) => setPerms({ ...perms, [k]: e.target.checked })}
-              />
-              {k}
-            </label>
-          ))}
-          <p className={donePerms ? 'l2-ok' : 'l2-sub'}>
-            {donePerms
-              ? 'Отлично: лишние доступы отключены.'
-              : 'Отключи лишние доступы (оставь всё выключенным для этого подозрительного приложения).'}
-          </p>
-        </div>
-      )}
-
-      {stage === 3 && (
-        <div className="l3-panel">
-          <h3>Проверка в VirusTotal (имитация)</h3>
-          <p className="l2-sub">Проверь список файлов. Один из них вредоносный.</p>
-          <div className="l3-file-list">
-            {[
-              { id: 'game', name: 'game_free.exe', result: 'обнаружена угроза' },
-              { id: 'hw', name: 'homework.pdf', result: 'файл безопасен' },
-              { id: 'notes', name: 'lesson_notes.docx', result: 'файл безопасен' },
-            ].map((f) => (
-              <div key={f.id} className="l3-file-row">
-                <span>{f.name}</span>
-                <button
-                  type="button"
-                  className="l3-file-btn"
-                  onClick={() => {
-                    setCheckedFiles((prev) => ({ ...prev, [f.id]: true }))
-                    if (f.id === 'game') setFileSafe((prev) => ({ ...prev, game: true }))
-                    if (f.id === 'hw') setFileSafe((prev) => ({ ...prev, hw: true }))
-                  }}
-                >
-                  Проверить
-                </button>
-                <span className="l3-file-status">
-                  {checkedFiles[f.id] ? f.result : 'не проверен'}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {stage === 4 && (
-        <div className="l3-panel">
-          <h3>Доступно обновление системы</h3>
-          <button type="button" className="l2-primary" onClick={() => setStage(5)}>
-            Установить обновление
-          </button>
-        </div>
-      )}
-
       {done ? (
-        <div className="l2-win">
-          <p>Поздравляю! Вы сделали свой компьютер безопасным.</p>
-          <button type="button" className="l2-primary" onClick={onNext}>К тесту</button>
-        </div>
+        <LunoVictoryScreen title="Отличная работа!" onContinue={onNext} continueLabel="К игре">
+          <p>Вы научились защищать устройство, проверять файлы, контролировать доступы и обновлять систему.</p>
+        </LunoVictoryScreen>
       ) : (
         <p className="l2-progress">
-          Выполнено: {(stage >= 1 ? 1 : 0) + (donePerms ? 1 : 0) + (doneFiles ? 1 : 0) + (stage >= 4 ? 1 : 0)} / 4
+          Выполнено: {(antivirusOn ? 1 : 0) + (donePerms ? 1 : 0) + (doneFiles ? 1 : 0) + (stage >= 5 ? 1 : 0)} / 4
         </p>
       )}
     </div>
@@ -572,8 +696,14 @@ function Test({ onComplete }) {
   const [ans, setAns] = useState({})
   const [fills, setFills] = useState({})
   const [submitted, setSubmitted] = useState(false)
+  const [step, setStep] = useState(0)
+  const [stepError, setStepError] = useState('')
   const shuffledQuestions = useMemo(
     () => test.map((q) => ({ ...q, o: shuffleArray(q.o) })),
+    [],
+  )
+  const shuffledFillTasks = useMemo(
+    () => fillTasks.map((task) => ({ ...task, bank: shuffleArray(task.bank) })),
     [],
   )
 
@@ -593,53 +723,127 @@ function Test({ onComplete }) {
     task.answers.every((x, i) => (fills[`${ti}_${i}`] || '') === x),
   )
   const allOk = submitted && okMain && okFill
+  const totalSteps = shuffledQuestions.length + shuffledFillTasks.length
+  const isQuestionStep = step < shuffledQuestions.length
+
+  const checkAll = () => {
+    const wrongQ = shuffledQuestions.findIndex((q, i) => {
+      const a = ans[i] || []
+      return q.type === 'single' ? a[0] !== q.c[0] : !arraysEqualAsSets(a, q.c)
+    })
+    if (wrongQ !== -1) {
+      setSubmitted(true)
+      setStep(wrongQ)
+      return
+    }
+    const wrongFill = fillTasks.findIndex((task, ti) =>
+      task.answers.some((x, i) => (fills[`${ti}_${i}`] || '') !== x),
+    )
+    if (wrongFill !== -1) {
+      setSubmitted(true)
+      setStep(shuffledQuestions.length + wrongFill)
+      return
+    }
+    setSubmitted(true)
+  }
+
+  const canGoNext = () => {
+    if (isQuestionStep) {
+      const q = shuffledQuestions[step]
+      const a = ans[step] || []
+      return q.type === 'single' ? a[0] === q.c[0] : arraysEqualAsSets(a, q.c)
+    }
+    const fillIdx = step - shuffledQuestions.length
+    const task = fillTasks[fillIdx]
+    return task.answers.every((x, i) => (fills[`${fillIdx}_${i}`] || '') === x)
+  }
+
+  const nextStep = () => {
+    if (!canGoNext()) {
+      setStepError('Неверно. Исправь ответ, чтобы перейти дальше.')
+      return
+    }
+    setStepError('')
+    setStep((s) => s + 1)
+  }
 
   return (
     <div className="l2-card">
       <h2 className="l2-title">Тест</h2>
-      {shuffledQuestions.map((q, i) => (
-        <div key={i} className="l2-q">
-          <p className="l2-q-title">{q.q}</p>
+      <p className="l2-progress">Шаг {step + 1} из {totalSteps}</p>
+      {isQuestionStep && (
+        <div className="l2-q">
+          <p className="l2-q-title">{shuffledQuestions[step].q}</p>
           <div className="l2-opts">
-            {q.o.map((o) => (
+            {shuffledQuestions[step].o.map((o) => (
               <label key={o} className="l2-opt">
                 <input
-                  type={q.type === 'single' ? 'radio' : 'checkbox'}
-                  name={`q_${i}`}
-                  checked={(ans[i] || []).includes(o)}
-                  onChange={() => toggle(i, o, q.type === 'multi')}
+                  type={shuffledQuestions[step].type === 'single' ? 'radio' : 'checkbox'}
+                  name={`q_${step}`}
+                  checked={(ans[step] || []).includes(o)}
+                  onChange={() => {
+                    setStepError('')
+                    toggle(step, o, shuffledQuestions[step].type === 'multi')
+                  }}
                 />
                 {o}
               </label>
             ))}
           </div>
         </div>
-      ))}
-
-      {fillTasks.map((task, ti) => (
-        <div key={ti} className="l2-q">
-          <p className="l2-q-title">{task.title}</p>
-          <p className="l2-sub">Слова: {task.bank.join(', ')}</p>
-          {task.lines.map((line, i) => (
-            <p key={i}>
-              {line[0]}{' '}
-              <select value={fills[`${ti}_${i}`] || ''} onChange={(e)=>setFills({...fills, [`${ti}_${i}`]: e.target.value})}>
-                <option value="">— выберите —</option>
-                {task.bank.map((w)=><option key={w} value={w}>{w}</option>)}
-              </select>{' '}
-              {line[1]}
-            </p>
-          ))}
+      )}
+      {!isQuestionStep && (
+        <div className="l2-q">
+          {(() => {
+            const fillIdx = step - shuffledQuestions.length
+            const task = shuffledFillTasks[fillIdx]
+            return (
+              <>
+                <p className="l2-q-title">{task.title}</p>
+                <p className="l2-sub">Слова: {task.bank.join(', ')}</p>
+                {task.lines.map((line, i) => (
+                  <p key={i}>
+                    {line[0]}{' '}
+                    <select
+                      value={fills[`${fillIdx}_${i}`] || ''}
+                      onChange={(e) => {
+                        setStepError('')
+                        setFills({ ...fills, [`${fillIdx}_${i}`]: e.target.value })
+                      }}
+                    >
+                      <option value="">— выберите —</option>
+                      {task.bank.map((w) => <option key={w} value={w}>{w}</option>)}
+                    </select>{' '}
+                    {line[1]}
+                  </p>
+                ))}
+              </>
+            )
+          })()}
         </div>
-      ))}
-
-      {!allOk && <button type="button" className="l2-primary" onClick={() => setSubmitted(true)}>Проверить</button>}
+      )}
+      <div className="l2-test-nav">
+        {step > 0 && (
+          <button type="button" className="back-button" onClick={() => setStep((s) => s - 1)}>
+            Назад
+          </button>
+        )}
+        {step < totalSteps - 1 ? (
+          <button type="button" className="l2-primary" onClick={nextStep}>
+            Далее
+          </button>
+        ) : (
+          <button type="button" className="l2-primary" onClick={checkAll}>
+            Проверить
+          </button>
+        )}
+      </div>
+      {stepError && <p className="l2-err">{stepError}</p>}
       {submitted && !allOk && <p className="l2-err">Есть ошибки. Исправь и проверь снова.</p>}
       {allOk && (
-        <div className="l2-win">
-          <p>Отлично! Уровень 3 пройден.</p>
-          <button type="button" className="l2-primary" onClick={onComplete}>Завершить уровень</button>
-        </div>
+        <LunoVictoryScreen title="Уровень 3 пройден!" onContinue={onComplete} continueLabel="К выбору уровней">
+          <p>Отлично! Ты закрепил правила цифровой безопасности.</p>
+        </LunoVictoryScreen>
       )}
     </div>
   )
@@ -699,7 +903,7 @@ export function Level3Flow() {
           </button>
           <h1>{TITLE}</h1>
         </div>
-        {step > 0 && (
+        {step > 0 && item.t !== 'd' && (
           <div className="scenario-prev-wrap">
             <button type="button" className="scenario-prev-btn" onClick={prev}>
               ← Предыдущий шаг сценария
@@ -713,8 +917,15 @@ export function Level3Flow() {
               <div className="avatar-circle l2-avatar-photo"><CharacterAvatar name={item.c} /></div>
               <div className="character-name">{item.c}</div>
             </div>
-            <div className="dialogue-bubble"><p>{item.x}</p></div>
-            <div className="level-actions">
+            <div className="dialogue-bubble">
+              {Array.isArray(item.x) ? item.x.map((line, i) => <p key={i}>{line}</p>) : <p>{item.x}</p>}
+            </div>
+            <div className="level-actions l3-dialog-actions">
+              {step > 0 && (
+                <button type="button" className="scenario-prev-btn" onClick={prev}>
+                  ← Назад
+                </button>
+              )}
               <button type="button" className="next-button" onClick={next}>Далее →</button>
             </div>
           </div>

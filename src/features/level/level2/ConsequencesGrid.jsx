@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { consequencesCards } from './level2FlowData'
+import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
 
 export function ConsequencesGrid({ onComplete }) {
@@ -31,12 +32,9 @@ export function ConsequencesGrid({ onComplete }) {
         })}
       </div>
       {done && (
-        <div className="l2-win">
-          <p>Молодец. Теперь ты понимаешь, почему важно проверять сайты и письма.</p>
-          <button type="button" className="l2-primary" onClick={onComplete}>
-            К тесту
-          </button>
-        </div>
+        <LunoVictoryScreen title="Молодец!" onContinue={onComplete} continueLabel="К тесту">
+          <p>Теперь ты понимаешь, почему важно проверять сайты и письма.</p>
+        </LunoVictoryScreen>
       )}
     </div>
   )

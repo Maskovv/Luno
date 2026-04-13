@@ -68,6 +68,11 @@
   margin-bottom: 20px;
 }
 
+.luno-victory .luno-victory-bubble,
+.luno-victory .luno-victory-bubble * {
+  color: #1a237e;
+}
+
 .luno-victory-bubble::before {
   content: '';
   position: absolute;
@@ -79,6 +84,8 @@
 
 .luno-victory-bubble p {
   margin: 0 0 10px;
+  color: #1a237e;
+  opacity: 1;
 }
 
 .luno-victory-bubble p:last-child {

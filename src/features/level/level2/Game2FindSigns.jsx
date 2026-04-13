@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { game2Signs } from './level2FlowData'
+import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
 
 export function Game2FindSigns({ onComplete }) {
@@ -141,12 +142,9 @@ export function Game2FindSigns({ onComplete }) {
       </p>
 
       {done && (
-        <div className="l2-win">
-          <p>Отлично! Ты нашёл все признаки небезопасного сайта.</p>
-          <button type="button" className="l2-primary" onClick={onComplete}>
-            Продолжить
-          </button>
-        </div>
+        <LunoVictoryScreen title="Отлично!" onContinue={onComplete} continueLabel="Вперёд">
+          <p>Ты нашёл все признаки небезопасного сайта.</p>
+        </LunoVictoryScreen>
       )}
     </div>
   )
