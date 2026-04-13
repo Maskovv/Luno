@@ -12,7 +12,7 @@ function shuffle(arr) {
   return a
 }
 
-export function Game3BuildProfile({ onComplete }) {
+export function Game3BuildProfile({ onComplete, lunoAvatarUrls }) {
   const pool = useMemo(() => shuffle(game3Cards.map((c) => ({ ...c }))), [])
   const [inProfile, setInProfile] = useState([])
   const [poolLeft, setPoolLeft] = useState(pool.map((c) => c.id))
@@ -74,7 +74,12 @@ export function Game3BuildProfile({ onComplete }) {
       </div>
       {warn && <p className="l1-feedback-bad">{warn}</p>}
       {win && (
-        <LunoVictoryScreen title="Прекрасная работа!" onContinue={onComplete} continueLabel="Вперёд">
+        <LunoVictoryScreen
+          title="Прекрасная работа!"
+          onContinue={onComplete}
+          continueLabel="Вперёд"
+          lunoAvatarUrls={lunoAvatarUrls}
+        >
           <p>Ты собрал безопасный профиль для Маши — без лишних личных данных.</p>
         </LunoVictoryScreen>
       )}

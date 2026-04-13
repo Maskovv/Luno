@@ -11,7 +11,7 @@ function arraysEqualAsSets(a, b) {
   return true
 }
 
-export function Level2Test({ onComplete }) {
+export function Level2Test({ onComplete, lunoAvatarUrls }) {
   const questions = useMemo(() => Object.entries(level2Test), [])
   const [answers, setAnswers] = useState({})
   const [submitted, setSubmitted] = useState(false)
@@ -75,7 +75,12 @@ export function Level2Test({ onComplete }) {
     return (
       <div className="l2-card">
         <h2 className="l2-title">Тест</h2>
-        <LunoVictoryScreen title="Уровень 2 пройден!" onContinue={onComplete} continueLabel="К выбору уровней">
+        <LunoVictoryScreen
+          title="Уровень 2 пройден!"
+          onContinue={onComplete}
+          continueLabel="К выбору уровней"
+          lunoAvatarUrls={lunoAvatarUrls}
+        >
           <p>Отлично! Ты завершил уровень 2.</p>
         </LunoVictoryScreen>
       </div>

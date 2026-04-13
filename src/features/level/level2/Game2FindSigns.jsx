@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { game2Signs } from './level2FlowData'
+import { LunoPhoto } from '../../../shared/components/LunoPhoto'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
 
@@ -7,7 +8,7 @@ const POPUP_AUTO_MS = 1100
 const POPUP_WRONG =
   'Так делать не стоит: на подозрительных окнах не нажимай «Получить приз». Закрой окно кнопкой «Закрыть».'
 
-export function Game2FindSigns({ onComplete }) {
+export function Game2FindSigns({ onComplete, lunoAvatarUrls }) {
   const [found, setFound] = useState(new Set())
   const [msg, setMsg] = useState('')
   const [popupOpen, setPopupOpen] = useState(false)
@@ -144,7 +145,12 @@ export function Game2FindSigns({ onComplete }) {
 
       {msg && (
         <div className="l2-luno">
-          <strong>Луно:</strong> {msg}
+          <div className="l2-luno-photo" aria-hidden>
+            <LunoPhoto urls={lunoAvatarUrls} className="l2-luno-img" alt="" />
+          </div>
+          <p className="l2-luno-text">
+            <strong>Луно:</strong> {msg}
+          </p>
         </div>
       )}
 
@@ -153,7 +159,12 @@ export function Game2FindSigns({ onComplete }) {
       </p>
 
       {done && (
-        <LunoVictoryScreen title="Отлично!" onContinue={onComplete} continueLabel="Вперёд">
+        <LunoVictoryScreen
+          title="Отлично!"
+          onContinue={onComplete}
+          continueLabel="Вперёд"
+          lunoAvatarUrls={lunoAvatarUrls}
+        >
           <p>Ты нашёл все признаки небезопасного сайта.</p>
         </LunoVictoryScreen>
       )}

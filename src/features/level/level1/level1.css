@@ -142,6 +142,13 @@
   font-weight: 500;
 }
 
+.l1-wide .dialogue-bubble strong,
+.l1-theory-p strong,
+.l1-hint-block strong {
+  color: #1a237e;
+  font-weight: 800;
+}
+
 .l1-win {
   margin-top: 20px;
   padding: 16px;
@@ -344,8 +351,22 @@
   gap: 12px;
 }
 
-.l1-pwd-display-large code {
-  font-size: 1.05rem;
+.l1-pwd-display-large .l1-pwd-label {
+  font-weight: 700;
+  color: #455a64;
+  font-size: 1.06rem;
+}
+
+.l1-pwd-display-large code.l1-pwd-value {
+  font-size: 1.32rem;
+  font-weight: 800;
+  color: #0d1642;
+  background: linear-gradient(180deg, #fffdf5 0%, #fff0b0 100%);
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 2px solid #ffb300;
+  box-shadow: 0 4px 14px rgba(255, 152, 0, 0.32);
+  letter-spacing: 0.03em;
 }
 
 .l1-hint-block-large {
@@ -843,6 +864,19 @@
   background: rgba(67, 160, 71, 0.65);
 }
 
+.l1-2fa-err {
+  margin-top: 12px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.42);
+  color: #fff8e1;
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
 .l1-game4-action {
   padding: 12px 16px;
   border-radius: 10px;
@@ -860,4 +894,264 @@
 
 .l1-game4-action:active {
   transform: translateY(1px);
+}
+
+/* --- Кинематографичные сцены (фон + диалог) --- */
+.level-page.level-page--l1-cinematic {
+  padding: 0;
+  min-height: 100vh;
+  /* как у остальных экранов уровня */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.l1-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* полосы по бокам при contain — тот же градиент, не «серые чёрные» */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.l1-backdrop--empty {
+  pointer-events: none;
+}
+
+/* Центрирование кадра на весь экран — без min-content (иначе ширина 0 до раскладки) и без mask-image */
+.l1-backdrop-picture {
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Мягкий стык градиента (полосы) и картинки при object-fit: contain */
+.l1-backdrop:has(.l1-backdrop-picture)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to right,
+      rgba(102, 126, 234, 0.55) 0%,
+      rgba(118, 75, 162, 0.12) 10%,
+      transparent 18%
+    ),
+    linear-gradient(
+      to left,
+      rgba(118, 75, 162, 0.55) 0%,
+      rgba(102, 126, 234, 0.12) 10%,
+      transparent 18%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(102, 126, 234, 0.4) 0%,
+      transparent 14%
+    ),
+    linear-gradient(
+      to top,
+      rgba(118, 75, 162, 0.35) 0%,
+      transparent 12%
+    );
+}
+
+.l1-backdrop-img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.l1-cinematic-root {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.l1-cinematic-chrome {
+  position: relative;
+  z-index: 3;
+  padding: 12px 16px 0;
+}
+
+.level-page--l1-cinematic .level-header h1 {
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+  font-size: clamp(1rem, 2.8vw, 1.35rem);
+}
+
+.level-page--l1-cinematic .back-button,
+.level-page--l1-cinematic .l1-glossary-toggle {
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+}
+
+.level-page--l1-cinematic .scenario-prev-btn {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.l1-cinematic-body {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 0;
+  padding: 6px 12px max(10px, env(safe-area-inset-bottom, 10px));
+  cursor: pointer;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 15, 22, 0) 42%,
+    rgba(15, 15, 22, 0.28) 68%,
+    rgba(15, 15, 22, 0.55) 100%
+  );
+}
+
+/* Реплики — прижаты к низу экрана, не «висят» по центру кадра */
+.l1-cinematic-body--dialogue {
+  justify-content: flex-start;
+  padding: 0 12px;
+  padding-bottom: max(6px, env(safe-area-inset-bottom, 6px));
+  background: linear-gradient(
+    180deg,
+    rgba(15, 15, 22, 0) 58%,
+    rgba(15, 15, 22, 0.12) 82%,
+    rgba(15, 15, 22, 0.38) 100%
+  );
+}
+
+.l1-cinematic-body--dialogue .l1-dialogue-cinematic {
+  position: absolute;
+  left: 50%;
+  bottom: max(6px, env(safe-area-inset-bottom, 6px));
+  transform: translateX(-50%);
+  width: min(520px, calc(100% - 24px));
+  margin: 0;
+  max-width: none;
+}
+
+.l1-dialogue-cinematic {
+  margin-bottom: 0;
+  margin-top: auto;
+  width: 100%;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.l1-dialogue-bubble-glass {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+  margin-left: 0 !important;
+  border-radius: 12px;
+  padding: 8px 11px;
+  max-height: min(22vh, 200px);
+  overflow-y: auto;
+}
+
+.l1-dialogue-bubble-glass::before {
+  display: none;
+}
+
+.l1-dialogue-speaker {
+  margin: 0 0 6px !important;
+  color: #1a237e !important;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.l1-cinematic-actions {
+  margin-top: 8px;
+  margin-bottom: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.l1-dialogue-bubble-glass p:not(.l1-dialogue-speaker) {
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.l1-tap-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+}
+
+.l1-scene-cta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 15vh;
+  text-align: center;
+}
+
+.l1-scene-hint {
+  margin: 0 0 20px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
+  max-width: 420px;
+  line-height: 1.45;
+}
+
+.l1-scene-actions {
+  margin-bottom: 0;
+}
+
+.l1-cinematic-actions .next-button {
+  padding: 11px 18px;
+  font-size: 1rem;
+}
+
+/* Игра 2: миниатюра «фото» — аватар Маши */
+.l1-hotspot-photo {
+  padding: 0;
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  display: block;
+}
+
+.l1-hotspot-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .l1-dialogue-bubble-glass p:not(.l1-dialogue-speaker) {
+    font-size: 0.92rem;
+  }
+
+  .l1-cinematic-chrome {
+    padding-top: 8px;
+  }
+
+  .l1-cinematic-body--dialogue .l1-dialogue-cinematic {
+    width: calc(100% - 20px);
+  }
 }

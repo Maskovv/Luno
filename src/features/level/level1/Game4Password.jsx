@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { game4Hints } from './level1FlowData'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
+import { RichText } from '../../../shared/components/RichText'
 import './level1.css'
 
 const INITIAL = 'mashapetrova'
@@ -29,7 +30,7 @@ const ACTION_DEFS = [
   { id: 'note', kind: 'bad', label: 'Записать пароль на стикер' },
 ]
 
-export function Game4Password({ onWin }) {
+export function Game4Password({ onWin, lunoAvatarUrls }) {
   const actions = useMemo(() => shuffle(ACTION_DEFS), [])
   const [time, setTime] = useState(INITIAL_TIME)
   const [pwd, setPwd] = useState(INITIAL)
@@ -101,7 +102,12 @@ export function Game4Password({ onWin }) {
 
   if (won) {
     return (
-      <LunoVictoryScreen title="Атака остановлена" onContinue={onWin} continueLabel="Вперёд">
+      <LunoVictoryScreen
+        title="Атака остановлена"
+        onContinue={onWin}
+        continueLabel="Вперёд"
+        lunoAvatarUrls={lunoAvatarUrls}
+      >
         <p>
           <strong>Луно:</strong> Вы приняли правильные решения:
         </p>
@@ -136,7 +142,8 @@ export function Game4Password({ onWin }) {
       <h2>Игра 4: Усиль пароль за ограниченное время</h2>
       <div className="l1-timer">⏱ {time} сек</div>
       <p className="l1-pwd-display l1-pwd-display-large">
-        Текущий пароль: <code>{pwd}</code>
+        <span className="l1-pwd-label">Текущий пароль:</span>{' '}
+        <code className="l1-pwd-value">{pwd}</code>
       </p>
       <div className="l1-game4-btns l1-game4-btns-grid">
         {actions.map((def) => (
@@ -157,13 +164,11 @@ export function Game4Password({ onWin }) {
       )}
       <div className="l1-hint-block l1-hint-block-large">
         {game4Hints.map((h, i) => (
-          <p key={i}>{h}</p>
+          <p key={i}>
+            <RichText>{h}</RichText>
+          </p>
         ))}
       </div>
-      <p className="l1-hint l1-hint-spoiler-free">
-        Успей усилить защиту до конца таймера: думай о длине пароля, разном регистре, цифрах, символах и о
-        дополнительном подтверждении входа.
-      </p>
     </div>
   )
 }

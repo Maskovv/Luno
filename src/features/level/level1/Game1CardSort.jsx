@@ -14,7 +14,7 @@ function shuffle(arr) {
 
 const BAD_FEEDBACK_MS = 4000
 
-export function Game1CardSort({ onComplete }) {
+export function Game1CardSort({ onComplete, lunoAvatarUrls }) {
   const deck = useMemo(() => {
     const items = [
       ...game1Cards.share.map((text) => ({ text, correct: 'share' })),
@@ -131,6 +131,7 @@ export function Game1CardSort({ onComplete }) {
           title="Отлично!"
           onContinue={onComplete}
           continueLabel="Вперёд"
+          lunoAvatarUrls={lunoAvatarUrls}
         >
           <p>Ты разобрался, какие сведения можно указывать открыто, а какие лучше не публиковать.</p>
         </LunoVictoryScreen>

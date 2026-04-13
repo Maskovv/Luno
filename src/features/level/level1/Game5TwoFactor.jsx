@@ -8,7 +8,7 @@ const OPTIONS = [
   { id: 'email', label: 'Электронная почта', icon: '✉️' },
 ]
 
-export function Game5TwoFactor({ onComplete }) {
+export function Game5TwoFactor({ onComplete, lunoAvatarUrls }) {
   const [method, setMethod] = useState(null)
   const [phase, setPhase] = useState('choose')
   const [typedCode, setTypedCode] = useState('')
@@ -44,7 +44,12 @@ export function Game5TwoFactor({ onComplete }) {
 
   if (ok) {
     return (
-      <LunoVictoryScreen title="Готово!" onContinue={onComplete} continueLabel="Вперёд">
+      <LunoVictoryScreen
+        title="Готово!"
+        onContinue={onComplete}
+        continueLabel="Вперёд"
+        lunoAvatarUrls={lunoAvatarUrls}
+      >
         <p>
           <strong>Луно:</strong> Молодец! Ты включил безопасный вход с подтверждением. Даже если кто-то узнает
           пароль, без кода на твоё устройство или почту войти не получится.
@@ -132,7 +137,7 @@ export function Game5TwoFactor({ onComplete }) {
                   ↵
                 </button>
               </div>
-              {err && <p className="l1-feedback-bad">{err}</p>}
+              {err && <p className="l1-2fa-err">{err}</p>}
             </div>
           )}
         </div>

@@ -1,13 +1,25 @@
 import { CharacterAvatar } from './CharacterAvatar'
+import { LunoPhoto } from './LunoPhoto'
 import './LunoVictoryScreen.css'
 
-export function LunoVictoryScreen({ title, children, onContinue, continueLabel = 'Вперёд' }) {
+export function LunoVictoryScreen({
+  title,
+  children,
+  onContinue,
+  continueLabel = 'Вперёд',
+  /** URL аватара Луно из level1 (несколько — fallback по порядку) */
+  lunoAvatarUrls,
+}) {
   return (
     <div className="luno-victory">
       <div className="luno-victory-backdrop" aria-hidden />
       <div className="luno-victory-inner">
         <div className="luno-victory-mascot" aria-hidden="true">
-          <CharacterAvatar name="Луно" className="luno-victory-avatar" />
+          {lunoAvatarUrls?.length ? (
+            <LunoPhoto urls={lunoAvatarUrls} className="luno-victory-avatar-img" alt="" />
+          ) : (
+            <CharacterAvatar name="Луно" className="luno-victory-avatar" />
+          )}
         </div>
         <div className="luno-victory-right">
           {title ? <h2 className="luno-victory-title">{title}</h2> : null}

@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { game1EmailHotspots } from './level2FlowData'
+import { LunoPhoto } from '../../../shared/components/LunoPhoto'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
 
-export function Game1PhishingEmail({ onComplete }) {
+export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
   const [found, setFound] = useState(new Set())
   const [msg, setMsg] = useState('')
 
@@ -79,9 +80,20 @@ export function Game1PhishingEmail({ onComplete }) {
                     Срочно! Аккаунт будет заблокирован
                   </button>
                 </div>
+                <p className="l2-email-attach-label">Вложение (не открывать):</p>
+                <div className="l2-email-attach">
+                  <span className="l2-email-attach-ico" aria-hidden>
+                    📄
+                  </span>
+                  <div className="l2-email-attach-meta">
+                    <span className="l2-email-attach-name">invoice__prize.scr</span>
+                    <span className="l2-email-attach-size">28 КБ</span>
+                  </div>
+                </div>
               </div>
             </div>
 
+        <div className="l2-email-letter">
         <div className="l2-email-body">
           <p>
             Здравствуйте,{" "}
@@ -137,13 +149,19 @@ export function Game1PhishingEmail({ onComplete }) {
             </button>
           </p>
         </div>
+        </div>
           </div>
         </div>
       </div>
 
       {msg && (
         <div className="l2-luno">
-          <strong>Луно:</strong> {msg}
+          <div className="l2-luno-photo" aria-hidden>
+            <LunoPhoto urls={lunoAvatarUrls} className="l2-luno-img" alt="" />
+          </div>
+          <p className="l2-luno-text">
+            <strong>Луно:</strong> {msg}
+          </p>
         </div>
       )}
 
@@ -152,7 +170,12 @@ export function Game1PhishingEmail({ onComplete }) {
       </p>
 
       {done && (
-        <LunoVictoryScreen title="Отлично!" onContinue={onComplete} continueLabel="Вперёд">
+        <LunoVictoryScreen
+          title="Отлично!"
+          onContinue={onComplete}
+          continueLabel="Вперёд"
+          lunoAvatarUrls={lunoAvatarUrls}
+        >
           <p>Ты заметил признаки фишинга в письме.</p>
         </LunoVictoryScreen>
       )}

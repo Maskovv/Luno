@@ -6,7 +6,7 @@ import './level1.css'
 const MC_COUNT = level1TestQuestions.length
 const TOTAL_STEPS = MC_COUNT + 1
 
-export function Level1FinalTest({ onComplete }) {
+export function Level1FinalTest({ onComplete, lunoAvatarUrls }) {
   const [answers, setAnswers] = useState({})
   const [fill, setFill] = useState({})
   const [step, setStep] = useState(0)
@@ -49,7 +49,12 @@ export function Level1FinalTest({ onComplete }) {
     return (
       <div className="l1-game l1-test">
         <h2>Итоговый тест</h2>
-        <LunoVictoryScreen title="Уровень пройден!" onContinue={onComplete} continueLabel="К выбору уровней">
+        <LunoVictoryScreen
+          title="Уровень пройден!"
+          onContinue={onComplete}
+          continueLabel="К выбору уровней"
+          lunoAvatarUrls={lunoAvatarUrls}
+        >
           <p>Отлично! Ты ответил на все вопросы и закрепил тему безопасности профиля.</p>
         </LunoVictoryScreen>
       </div>

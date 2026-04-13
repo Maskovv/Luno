@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { game2Hotspots } from './level1FlowData'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
+import { MASHA_AVATAR_URLS } from './level1Scenes'
 import './level1.css'
 
-export function Game2Profile({ onComplete }) {
+export function Game2Profile({ onComplete, lunoAvatarUrls }) {
   const [found, setFound] = useState(new Set())
   const [lastMsg, setLastMsg] = useState(null)
 
@@ -44,10 +45,16 @@ export function Game2Profile({ onComplete }) {
               <div className="l1-profile-header">
                 <button
                   type="button"
-                  className={`l1-hotspot l1-h-cover ${found.has('school_photo') ? 'l1-found' : ''}`}
+                  className={`l1-hotspot l1-hotspot-photo ${found.has('school_photo') ? 'l1-found' : ''}`}
                   onClick={() => toggle('school_photo')}
+                  title="Фото (школа на фоне)"
                 >
-                  Фото (школа на фоне)
+                  <img
+                    src={MASHA_AVATAR_URLS[0]}
+                    alt="Фото профиля"
+                    className="l1-hotspot-photo-img"
+                    draggable={false}
+                  />
                 </button>
                 <div>
                   <button
@@ -139,7 +146,12 @@ export function Game2Profile({ onComplete }) {
         Найдено уязвимостей: {found.size} / {game2Hotspots.length}
       </p>
       {done && (
-        <LunoVictoryScreen title="Супер!" onContinue={onComplete} continueLabel="Вперёд">
+        <LunoVictoryScreen
+          title="Супер!"
+          onContinue={onComplete}
+          continueLabel="Вперёд"
+          lunoAvatarUrls={lunoAvatarUrls}
+        >
           <p>
             Вы нашли все уязвимости! Отлично! Теперь ты понимаешь, почему важно контролировать каждую
             опубликованную деталь.

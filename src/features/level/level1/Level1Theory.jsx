@@ -1,3 +1,4 @@
+import { RichText } from '../../../shared/components/RichText'
 import './level1.css'
 
 export function Level1Theory({ title, paragraphs, onNext }) {
@@ -6,7 +7,7 @@ export function Level1Theory({ title, paragraphs, onNext }) {
       <h2 className="l1-theory-title">{title}</h2>
       {paragraphs.map((p, i) => (
         <p key={i} className="l1-theory-p">
-          {p}
+          <RichText>{p}</RichText>
         </p>
       ))}
       <button type="button" className="l1-btn-primary" onClick={onNext}>

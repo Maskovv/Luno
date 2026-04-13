@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth'
 import { level1Flow, LEVEL1_TITLE, level1Glossary } from './level1FlowData'
@@ -15,9 +15,10 @@ import {
   setLevelStep,
   unlockNextLevel,
 } from '../../../shared/api/firestoreProgress'
-import { CharacterAvatar } from '../../../shared/components/CharacterAvatar'
 import { GameSplashScreen } from '../../../shared/components/GameSplashScreen'
 import { TeacherStepSkip } from '../../../shared/components/TeacherStepSkip'
+import { RichText } from '../../../shared/components/RichText'
+import { level1UrlsForBg, LUNO_AVATAR_URLS } from './level1Scenes'
 import './level1.css'
 
 const LEVEL_ID = '1'
@@ -27,12 +28,46 @@ function DialogueLines({ text }) {
     return (
       <>
         {text.map((line, i) => (
-          <p key={i}>{line}</p>
+          <p key={i}>
+            <RichText>{line}</RichText>
+          </p>
         ))}
       </>
     )
   }
-  return <p>{text}</p>
+  return (
+    <p>
+      <RichText>{text}</RichText>
+    </p>
+  )
+}
+
+function Level1Backdrop({ bgKey }) {
+  const urls = useMemo(() => (bgKey ? level1UrlsForBg(bgKey) : []), [bgKey])
+  const [attempt, setAttempt] = useState(0)
+
+  useEffect(() => {
+    setAttempt(0)
+  }, [bgKey])
+
+  const src = urls[attempt]
+  if (!src || attempt >= urls.length) {
+    return <div className="l1-backdrop l1-backdrop--empty" aria-hidden />
+  }
+
+  return (
+    <div className="l1-backdrop" aria-hidden>
+      <div className="l1-backdrop-picture">
+        <img
+          key={src}
+          src={src}
+          alt=""
+          className="l1-backdrop-img"
+          onError={() => setAttempt((a) => a + 1)}
+        />
+      </div>
+    </div>
+  )
 }
 
 export function Level1Flow() {
@@ -84,115 +119,163 @@ export function Level1Flow() {
   const flowLen = level1Flow.length
   const teacherExitPreview = () => navigate('/levels')
 
-  return (
-    <div className="level-page">
-      <div className="level-container l1-wide">
-        <div className="level-header level-header-with-tools">
-          <button type="button" className="back-button" onClick={() => navigate('/levels')}>
-            ← Назад
-          </button>
-          <h1>{LEVEL1_TITLE}</h1>
-          <button
-            type="button"
-            className="l1-glossary-toggle"
-            onClick={() => setGlossaryOpen(true)}
-            aria-label="Открыть словарик"
-            title="Словарик"
-          >
-            📖
-          </button>
-        </div>
-        {step > 0 && (
-          <div className="scenario-prev-wrap">
-            <button type="button" className="scenario-prev-btn" onClick={prev}>
-              ← Предыдущий шаг сценария
-            </button>
-          </div>
-        )}
+  const isCinematic = item.type === 'scene' || (item.type === 'dialogue' && item.bgKey)
 
-        {item.type === 'dialogue' && (
-          <div className="dialogue-section">
-            <div className="character-avatar">
-              <div className="avatar-circle l1-avatar-photo">
-                <CharacterAvatar name={item.character} />
-              </div>
-              <div className="character-name">{item.character}</div>
-            </div>
-            <div className="dialogue-bubble">
-              <DialogueLines text={item.text} />
-            </div>
-            <div className="level-actions">
-              <button type="button" className="next-button" onClick={next}>
-                Далее →
-              </button>
-            </div>
-          </div>
-        )}
+  const renderHeader = () => (
+    <div className="level-header level-header-with-tools">
+      <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+        ← Назад
+      </button>
+      <h1>{LEVEL1_TITLE}</h1>
+      <button
+        type="button"
+        className="l1-glossary-toggle"
+        onClick={() => setGlossaryOpen(true)}
+        aria-label="Открыть словарик"
+        title="Словарик"
+      >
+        📖
+      </button>
+    </div>
+  )
 
-        {item.type === 'splash' && (
-          <GameSplashScreen
-            title={item.title}
-            paragraphs={item.paragraphs}
-            bullets={item.bullets}
-            closing={item.closing}
-            buttonText={item.buttonText}
-            onContinue={next}
-          />
-        )}
-
-        {item.type === 'theory' && (
-          <Level1Theory title={item.title} paragraphs={item.paragraphs} onNext={next} />
-        )}
-
-        {item.type === 'game1' && <Game1CardSort onComplete={next} />}
-        {item.type === 'game2' && <Game2Profile onComplete={next} />}
-        {item.type === 'game3' && <Game3BuildProfile onComplete={next} />}
-        {item.type === 'game4' && <Game4Password onWin={next} />}
-        {item.type === 'game5' && <Game5TwoFactor onComplete={next} />}
-        {item.type === 'test' && <Level1FinalTest onComplete={completeLevel} />}
+  const renderPrev = () =>
+    step > 0 && (
+      <div className="scenario-prev-wrap">
+        <button type="button" className="scenario-prev-btn" onClick={prev}>
+          ← Предыдущий шаг сценария
+        </button>
       </div>
+    )
 
-      {glossaryOpen && (
-        <div
-          className="l1-glossary-modal-backdrop"
-          role="presentation"
-          onClick={() => setGlossaryOpen(false)}
-        >
-          <div
-            className="l1-glossary-modal"
-            role="dialog"
-            aria-labelledby="l1-glossary-title"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="l1-glossary-modal-head">
-              <span className="l1-glossary-modal-icon" aria-hidden>
-                📖
-              </span>
-              <h2 id="l1-glossary-title">Словарик</h2>
+  const glossaryModal = glossaryOpen && (
+    <div
+      className="l1-glossary-modal-backdrop"
+      role="presentation"
+      onClick={() => setGlossaryOpen(false)}
+    >
+      <div
+        className="l1-glossary-modal"
+        role="dialog"
+        aria-labelledby="l1-glossary-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="l1-glossary-modal-head">
+          <span className="l1-glossary-modal-icon" aria-hidden>
+            📖
+          </span>
+          <h2 id="l1-glossary-title">Словарик</h2>
+        </div>
+        <div className="l1-glossary-modal-body">
+          {level1Glossary.map((entry) => (
+            <div key={entry.term} className="l1-glossary-modal-item">
+              <strong>{entry.term}</strong>
+              <p>{entry.def}</p>
             </div>
-            <div className="l1-glossary-modal-body">
-              {level1Glossary.map((entry) => (
-                <div key={entry.term} className="l1-glossary-modal-item">
-                  <strong>{entry.term}</strong>
-                  <p>{entry.def}</p>
-                </div>
-              ))}
-            </div>
-            <button type="button" className="l1-glossary-close" onClick={() => setGlossaryOpen(false)}>
-              Закрыть
-            </button>
+          ))}
+        </div>
+        <button type="button" className="l1-glossary-close" onClick={() => setGlossaryOpen(false)}>
+          Закрыть
+        </button>
+      </div>
+    </div>
+  )
+
+  const teacherSkip = !roleLoading && (
+    <TeacherStepSkip
+      isTeacher={isTeacher}
+      isLastStep={step >= flowLen - 1}
+      onSkipStep={next}
+      onEndPreview={teacherExitPreview}
+    />
+  )
+
+  return (
+    <div className={`level-page ${isCinematic ? 'level-page--l1-cinematic' : ''}`}>
+      {isCinematic ? (
+        <div className="l1-cinematic-root">
+          <Level1Backdrop bgKey={item.bgKey} />
+          <div className="l1-cinematic-chrome" onClick={(e) => e.stopPropagation()}>
+            {renderHeader()}
+            {renderPrev()}
           </div>
+          <div
+            className={`l1-cinematic-body ${item.type === 'dialogue' ? 'l1-cinematic-body--dialogue' : ''}`}
+            onClick={next}
+            role="presentation"
+          >
+            {item.type === 'scene' && (
+              <div className="l1-scene-cta">
+                <p className="l1-scene-hint">Щёлкни по экрану или нажми кнопку, чтобы продолжить</p>
+                <div className="level-actions l1-scene-actions">
+                  <button
+                    type="button"
+                    className="next-button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      next()
+                    }}
+                  >
+                    Продолжить →
+                  </button>
+                </div>
+              </div>
+            )}
+            {item.type === 'dialogue' && (
+              <div className="dialogue-section l1-dialogue-cinematic">
+                <div className="dialogue-bubble l1-dialogue-bubble-glass">
+                  <p className="l1-dialogue-speaker">{item.character}</p>
+                  <DialogueLines text={item.text} />
+                </div>
+                <div className="level-actions l1-cinematic-actions">
+                  <button
+                    type="button"
+                    className="next-button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      next()
+                    }}
+                  >
+                    Далее →
+                  </button>
+                  <p className="l1-tap-hint">или щёлкни по экрану</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="level-container l1-wide">
+          {renderHeader()}
+          {renderPrev()}
+
+          {item.type === 'splash' && (
+            <GameSplashScreen
+              title={item.title}
+              paragraphs={item.paragraphs}
+              bullets={item.bullets}
+              closing={item.closing}
+              buttonText={item.buttonText}
+              onContinue={next}
+              lunoAvatarUrls={LUNO_AVATAR_URLS}
+            />
+          )}
+
+          {item.type === 'theory' && (
+            <Level1Theory title={item.title} paragraphs={item.paragraphs} onNext={next} />
+          )}
+
+          {item.type === 'game1' && <Game1CardSort onComplete={next} lunoAvatarUrls={LUNO_AVATAR_URLS} />}
+          {item.type === 'game2' && <Game2Profile onComplete={next} lunoAvatarUrls={LUNO_AVATAR_URLS} />}
+          {item.type === 'game3' && <Game3BuildProfile onComplete={next} lunoAvatarUrls={LUNO_AVATAR_URLS} />}
+          {item.type === 'game4' && <Game4Password onWin={next} lunoAvatarUrls={LUNO_AVATAR_URLS} />}
+          {item.type === 'game5' && <Game5TwoFactor onComplete={next} lunoAvatarUrls={LUNO_AVATAR_URLS} />}
+          {item.type === 'test' && <Level1FinalTest onComplete={completeLevel} lunoAvatarUrls={LUNO_AVATAR_URLS} />}
         </div>
       )}
 
-      {!roleLoading && (
-        <TeacherStepSkip
-          isTeacher={isTeacher}
-          isLastStep={step >= flowLen - 1}
-          onSkipStep={next}
-          onEndPreview={teacherExitPreview}
-        />
-      )}
+      {glossaryModal}
+      {teacherSkip}
     </div>
   )
 }

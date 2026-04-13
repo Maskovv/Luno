@@ -3,7 +3,7 @@ import { consequencesCards } from './level2FlowData'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
 
-export function ConsequencesGrid({ onComplete }) {
+export function ConsequencesGrid({ onComplete, lunoAvatarUrls }) {
   const [open, setOpen] = useState({})
 
   const openedCount = Object.values(open).filter(Boolean).length
@@ -22,21 +22,41 @@ export function ConsequencesGrid({ onComplete }) {
             <button
               key={c.id}
               type="button"
-              className={`l2-cons ${isOpen ? 'l2-cons-open' : ''}`}
+              className={`l2-cons ${isOpen ? 'l2-cons-open' : 'l2-cons-face'}`}
+              style={
+                isOpen
+                  ? undefined
+                  : {
+                      background: c.closedBg,
+                      borderColor: 'transparent',
+                    }
+              }
               onClick={() => setOpen((o) => ({ ...o, [c.id]: true }))}
             >
-              <div className="l2-cons-title">{c.title}</div>
-              <div className="l2-cons-body">{isOpen ? c.text : 'Нажми, чтобы открыть'}</div>
+              {isOpen ? (
+                <>
+                  <div className="l2-cons-title">{c.title}</div>
+                  <div className="l2-cons-body">{c.text}</div>
+                </>
+              ) : (
+                <span className="l2-cons-emoji" aria-hidden>
+                  {c.emoji}
+                </span>
+              )}
             </button>
           )
         })}
       </div>
       {done && (
-        <LunoVictoryScreen title="Молодец!" onContinue={onComplete} continueLabel="К тесту">
+        <LunoVictoryScreen
+          title="Молодец!"
+          onContinue={onComplete}
+          continueLabel="К тесту"
+          lunoAvatarUrls={lunoAvatarUrls}
+        >
           <p>Теперь ты понимаешь, почему важно проверять сайты и письма.</p>
         </LunoVictoryScreen>
       )}
     </div>
   )
 }
-
