@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { game1Cards } from './level1FlowData'
+import { RichText } from '../../../shared/components/RichText'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level1.css'
 
@@ -133,7 +134,11 @@ export function Game1CardSort({ onComplete, lunoAvatarUrls }) {
           continueLabel="Вперёд"
           lunoAvatarUrls={lunoAvatarUrls}
         >
-          <p>Ты разобрался, какие сведения можно указывать открыто, а какие лучше не публиковать.</p>
+          <p>
+            <RichText>
+              Ты разобрался, какие сведения можно указывать **открыто**, а какие лучше **не публиковать**.
+            </RichText>
+          </p>
         </LunoVictoryScreen>
       )}
     </div>

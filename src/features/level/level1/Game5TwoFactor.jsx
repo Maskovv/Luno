@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { RichText } from '../../../shared/components/RichText'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level1.css'
 
@@ -51,8 +52,11 @@ export function Game5TwoFactor({ onComplete, lunoAvatarUrls }) {
         lunoAvatarUrls={lunoAvatarUrls}
       >
         <p>
-          <strong>Луно:</strong> Молодец! Ты включил безопасный вход с подтверждением. Даже если кто-то узнает
-          пароль, без кода на твоё устройство или почту войти не получится.
+          <strong>Луно:</strong>{' '}
+          <RichText as="span">
+            Молодец! Ты включил **безопасный вход с подтверждением**. Даже если кто-то узнает **пароль**, без
+            **кода** на твоё устройство или почту войти не получится.
+          </RichText>
         </p>
       </LunoVictoryScreen>
     )

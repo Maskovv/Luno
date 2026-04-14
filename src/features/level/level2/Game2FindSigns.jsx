@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { RichText } from '../../../shared/components/RichText'
 import { game2Signs } from './level2FlowData'
 import { LunoPhoto } from '../../../shared/components/LunoPhoto'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
@@ -6,7 +7,7 @@ import './level2.css'
 
 const POPUP_AUTO_MS = 1100
 const POPUP_WRONG =
-  'Так делать не стоит: на подозрительных окнах не нажимай «Получить приз». Закрой окно кнопкой «Закрыть».'
+  'Так делать не стоит: на подозрительных окнах не нажимай «Получить приз». **Закрой окно** кнопкой «Закрыть».'
 
 export function Game2FindSigns({ onComplete, lunoAvatarUrls }) {
   const [found, setFound] = useState(new Set())
@@ -149,7 +150,7 @@ export function Game2FindSigns({ onComplete, lunoAvatarUrls }) {
             <LunoPhoto urls={lunoAvatarUrls} className="l2-luno-img" alt="" />
           </div>
           <p className="l2-luno-text">
-            <strong>Луно:</strong> {msg}
+            <strong>Луно:</strong> <RichText>{msg}</RichText>
           </p>
         </div>
       )}
@@ -165,7 +166,9 @@ export function Game2FindSigns({ onComplete, lunoAvatarUrls }) {
           continueLabel="Вперёд"
           lunoAvatarUrls={lunoAvatarUrls}
         >
-          <p>Ты нашёл все признаки небезопасного сайта.</p>
+          <p>
+            <RichText>Ты нашёл все **признаки небезопасного сайта**.</RichText>
+          </p>
         </LunoVictoryScreen>
       )}
     </div>

@@ -12,6 +12,7 @@ import { Level1FinalTest } from './Level1FinalTest'
 import {
   completeLevel as completeLevelInDb,
   getLevelState,
+  getUnlockedLevels,
   setLevelStep,
   unlockNextLevel,
 } from '../../../shared/api/firestoreProgress'
@@ -75,19 +76,36 @@ export function Level1Flow() {
   const { user, isTeacher, roleLoading } = useAuth()
   const [step, setStep] = useState(0)
   const [glossaryOpen, setGlossaryOpen] = useState(false)
+  const [welcomeReady, setWelcomeReady] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(false)
 
   useEffect(() => {
     let cancelled = false
     if (!user) return
     ;(async () => {
-      const state = await getLevelState(user.uid, LEVEL_ID)
+      const [state, unlocked] = await Promise.all([
+        getLevelState(user.uid, LEVEL_ID),
+        getUnlockedLevels(user.uid),
+      ])
       if (cancelled) return
+
       if (state?.completed) {
         setStep(0)
         setLevelStep(user.uid, LEVEL_ID, 0)
+        setShowWelcome(false)
+        setWelcomeReady(true)
         return
       }
-      if (state?.step != null && state.step < level1Flow.length) setStep(state.step)
+
+      if (state?.step != null && state.step < level1Flow.length) {
+        setStep(state.step)
+      }
+
+      const maxUnlocked = unlocked.length ? Math.max(...unlocked) : 1
+      const onlyLevel1 = maxUnlocked === 1
+      setShowWelcome(onlyLevel1 && state == null)
+
+      setWelcomeReady(true)
     })()
     return () => {
       cancelled = true
@@ -112,6 +130,40 @@ export function Level1Flow() {
   }
 
   const item = level1Flow[step]
+  if (!welcomeReady) {
+    return <div className="level-page">Загрузка…</div>
+  }
+
+  if (showWelcome) {
+    const dismissWelcome = () => {
+      if (user) setLevelStep(user.uid, LEVEL_ID, 0)
+      setShowWelcome(false)
+    }
+    return (
+      <div className="level-page">
+        <div className="level-container l1-wide">
+          <div className="level-header">
+            <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+              ← Назад
+            </button>
+            <h1>{LEVEL1_TITLE}</h1>
+          </div>
+          <GameSplashScreen
+            title="Добро пожаловать!"
+            paragraphs={[
+              'Здравствуйте! Это учебная игра по **кибербезопасности** для школьников.',
+              'Вы пройдёте сценарии с героями, мини-игры и тесты — шаг за шагом, с подсказками Луно.',
+              'Пока открыт только первый уровень: начните с него и по мере прохождения откроются следующие.',
+            ]}
+            buttonText="Начать игру"
+            onContinue={dismissWelcome}
+            lunoAvatarUrls={LUNO_AVATAR_URLS}
+          />
+        </div>
+      </div>
+    )
+  }
+
   if (!item) {
     return <div className="level-page">Загрузка…</div>
   }

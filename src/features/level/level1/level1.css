@@ -514,8 +514,12 @@
 }
 
 .l1-fill-line {
-  margin: 0.5rem 0;
-  line-height: 1.8;
+  margin: 0.65rem 0;
+  line-height: 1.85;
+}
+
+.l1-fill-line.l-test-fill-line {
+  margin: 0.75rem 0;
 }
 
 .l1-test {

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { level2Test } from './level2FlowData'
+import { RichText } from '../../../shared/components/RichText'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
 
@@ -81,7 +82,9 @@ export function Level2Test({ onComplete, lunoAvatarUrls }) {
           continueLabel="К выбору уровней"
           lunoAvatarUrls={lunoAvatarUrls}
         >
-          <p>Отлично! Ты завершил уровень 2.</p>
+          <p>
+            <RichText>Отлично! Ты завершил **уровень 2** и закрепил тему **фишинга**.</RichText>
+          </p>
         </LunoVictoryScreen>
       </div>
     )

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { RichText } from '../../../shared/components/RichText'
 import { LunoPhoto } from '../../../shared/components/LunoPhoto'
 import { carouselSlides } from './level2FlowData'
 import { LUNO_AVATAR_URLS } from '../level1/level1Scenes'
@@ -25,7 +26,7 @@ export function Level2Carousel({ onNext }) {
           </div>
         </div>
         <div className="l2-carousel-bubble" style={fg ? { color: '#111' } : undefined}>
-          {slide.bubble}
+          <RichText>{slide.bubble}</RichText>
         </div>
       </header>
 

@@ -87,7 +87,9 @@ export function Level5FinalVictory({ onFinish }) {
       lunoAvatarUrls={LUNO_AVATAR_URLS}
     >
       <p>
-        Спасибо за игру! Ты прошёл все уровни и освоил важные правила цифровой безопасности.
+        <RichText>
+          Спасибо за игру! Ты прошёл все уровни и освоил **важные правила цифровой безопасности**.
+        </RichText>
       </p>
     </LunoVictoryScreen>
   )

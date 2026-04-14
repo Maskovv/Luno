@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { game3Cards } from './level1FlowData'
+import { RichText } from '../../../shared/components/RichText'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level1.css'
 
@@ -80,7 +81,9 @@ export function Game3BuildProfile({ onComplete, lunoAvatarUrls }) {
           continueLabel="Вперёд"
           lunoAvatarUrls={lunoAvatarUrls}
         >
-          <p>Ты собрал безопасный профиль для Маши — без лишних личных данных.</p>
+          <p>
+            <RichText>Ты собрал **безопасный профиль** для Маши — без лишних **личных данных**.</RichText>
+          </p>
         </LunoVictoryScreen>
       )}
     </div>

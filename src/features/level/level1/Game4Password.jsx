@@ -109,15 +109,24 @@ export function Game4Password({ onWin, lunoAvatarUrls }) {
         lunoAvatarUrls={lunoAvatarUrls}
       >
         <p>
-          <strong>Луно:</strong> Вы приняли правильные решения:
+          <strong>Луно:</strong>{' '}
+          <RichText as="span">Вы приняли **правильные решения**:</RichText>
         </p>
         <ul className="luno-victory-checklist">
-          <li>усилили пароль</li>
-          <li>исключили личные данные</li>
-          <li>включили дополнительную защиту</li>
+          <li>
+            <RichText>усилили **пароль**</RichText>
+          </li>
+          <li>
+            <RichText>исключили **личные данные**</RichText>
+          </li>
+          <li>
+            <RichText>включили **дополнительную защиту**</RichText>
+          </li>
         </ul>
         <p>
-          Помни, что не следует использовать один и тот же пароль в разных сервисах, даже если он сложный.
+          <RichText>
+            Помни, что не следует использовать **один и тот же пароль** в разных сервисах, даже если он сложный.
+          </RichText>
         </p>
       </LunoVictoryScreen>
     )

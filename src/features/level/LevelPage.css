@@ -242,3 +242,20 @@
   margin: 0;
 }
 
+/* Тесты: строки с пропуском и выпадающим списком — достаточный межстрочный интервал */
+.l-test-fill-line {
+  line-height: 1.85;
+  margin: 0.75rem 0;
+  font-size: 1.02rem;
+}
+
+.l-test-fill-line select {
+  margin: 3px 2px;
+  vertical-align: baseline;
+  max-width: min(100%, 280px);
+}
+
+.l2-q .l-test-fill-line {
+  margin: 0.85rem 0;
+}
+

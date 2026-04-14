@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react'
 import { level1TestQuestions, level1TestFill } from './level1FlowData'
+import { RichText } from '../../../shared/components/RichText'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
+import '../LevelPage.css'
 import './level1.css'
 
 const MC_COUNT = level1TestQuestions.length
@@ -55,7 +57,11 @@ export function Level1FinalTest({ onComplete, lunoAvatarUrls }) {
           continueLabel="К выбору уровней"
           lunoAvatarUrls={lunoAvatarUrls}
         >
-          <p>Отлично! Ты ответил на все вопросы и закрепил тему безопасности профиля.</p>
+          <p>
+            <RichText>
+              Отлично! Ты ответил на все вопросы и закрепил тему **безопасности профиля**.
+            </RichText>
+          </p>
         </LunoVictoryScreen>
       </div>
     )
@@ -129,7 +135,7 @@ export function Level1FinalTest({ onComplete, lunoAvatarUrls }) {
           </p>
           <p className="l1-word-bank l1-fill-hint">{level1TestFill.instruction}</p>
           {level1TestFill.blanks.map((b) => (
-            <p key={b.id} className="l1-fill-line l1-fill-line-select">
+            <p key={b.id} className="l1-fill-line l1-fill-line-select l-test-fill-line">
               {b.sentenceBefore}{' '}
               <select
                 className="l1-select"

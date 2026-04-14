@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { RichText } from '../../../shared/components/RichText'
 import { game2Hotspots } from './level1FlowData'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import { MASHA_AVATAR_URLS } from './level1Scenes'
@@ -139,7 +140,7 @@ export function Game2Profile({ onComplete, lunoAvatarUrls }) {
 
       {lastMsg && (
         <div className="l1-luno-box">
-          <strong>Луно:</strong> {lastMsg}
+          <strong>Луно:</strong> <RichText>{lastMsg}</RichText>
         </div>
       )}
       <p className="l1-progress">
@@ -153,8 +154,10 @@ export function Game2Profile({ onComplete, lunoAvatarUrls }) {
           lunoAvatarUrls={lunoAvatarUrls}
         >
           <p>
-            Вы нашли все уязвимости! Отлично! Теперь ты понимаешь, почему важно контролировать каждую
-            опубликованную деталь.
+            <RichText>
+              Вы нашли все уязвимости! **Отлично!** Теперь ты понимаешь, почему важно контролировать каждую
+              **опубликованную деталь**.
+            </RichText>
           </p>
         </LunoVictoryScreen>
       )}

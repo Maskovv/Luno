@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { LunoPhoto } from '../../../shared/components/LunoPhoto'
+import { RichText } from '../../../shared/components/RichText'
 import './level3.css'
 
 const PERM_LABELS = {
@@ -70,7 +71,9 @@ export function Level3SafePc({ onNext, lunoAvatarUrls }) {
         <div>
           <h2 className="l2-title l3-safepc-lead-title">Игра 2: безопасный компьютер</h2>
           <p className="l2-sub l3-safepc-lead-sub">
-            Рабочий стол, окна и панель задач — как на настоящем ПК. Выполни все четыре шага защиты.
+            <RichText>
+              Рабочий стол, окна и панель задач — как на настоящем ПК. Выполни все **четыре шага защиты**.
+            </RichText>
           </p>
         </div>
       </div>
@@ -248,7 +251,9 @@ export function Level3SafePc({ onNext, lunoAvatarUrls }) {
         <p className="l3-safepc-progress">Прогресс: {progress} / 4</p>
       ) : (
         <div className="l3-safepc-done">
-          <p className="l3-safepc-done-text">Все действия выполнены — компьютер в безопасности.</p>
+          <p className="l3-safepc-done-text">
+            <RichText>Все действия выполнены — компьютер в **безопасности**.</RichText>
+          </p>
           <button type="button" className="l2-primary l3-safepc-continue" onClick={onNext}>
             Продолжить
           </button>

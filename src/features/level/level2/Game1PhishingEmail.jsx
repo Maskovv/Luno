@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { RichText } from '../../../shared/components/RichText'
 import { game1EmailHotspots } from './level2FlowData'
 import { LunoPhoto } from '../../../shared/components/LunoPhoto'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
@@ -160,7 +161,7 @@ export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
             <LunoPhoto urls={lunoAvatarUrls} className="l2-luno-img" alt="" />
           </div>
           <p className="l2-luno-text">
-            <strong>Луно:</strong> {msg}
+            <strong>Луно:</strong> <RichText>{msg}</RichText>
           </p>
         </div>
       )}
@@ -176,7 +177,9 @@ export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
           continueLabel="Вперёд"
           lunoAvatarUrls={lunoAvatarUrls}
         >
-          <p>Ты заметил признаки фишинга в письме.</p>
+          <p>
+            <RichText>Ты заметил **признаки фишинга** в письме.</RichText>
+          </p>
         </LunoVictoryScreen>
       )}
     </div>

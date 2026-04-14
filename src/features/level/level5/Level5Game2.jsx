@@ -88,7 +88,11 @@ export function Level5Game2({ onNext }) {
         continueLabel="Вперёд"
         lunoAvatarUrls={LUNO_AVATAR_URLS}
       >
-        <p>Ты правильно разделил мысли и показал, как поддерживать себя в сложной ситуации.</p>
+        <p>
+          <RichText>
+            Ты правильно разделил мысли и показал, как **поддерживать себя** в сложной ситуации.
+          </RichText>
+        </p>
       </LunoVictoryScreen>
     )
   }

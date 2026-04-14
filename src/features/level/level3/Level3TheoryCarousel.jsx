@@ -85,13 +85,17 @@ export function Level3TheoryCarousel({ lunoAvatarUrls, onNext }) {
               <p className="l3-card-h">{slide.detectTitle}</p>
               <ul className="l3-card-list">
                 {slide.detect.map((d) => (
-                  <li key={d}>{d}</li>
+                  <li key={d}>
+                    <RichText>{d}</RichText>
+                  </li>
                 ))}
               </ul>
               <p className="l3-card-h">{slide.protectTitle}</p>
               <ul className="l3-card-list">
                 {slide.protect.map((d) => (
-                  <li key={d}>{d}</li>
+                  <li key={d}>
+                    <RichText>{d}</RichText>
+                  </li>
                 ))}
               </ul>
             </div>

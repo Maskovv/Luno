@@ -113,6 +113,11 @@
   margin-bottom: 0;
 }
 
+.luno-victory-bubble strong {
+  font-weight: 800;
+  color: #0d1540;
+}
+
 .luno-victory-checklist {
   list-style: none;
   margin: 12px 0 0;

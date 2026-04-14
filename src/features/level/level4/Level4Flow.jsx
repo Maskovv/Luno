@@ -230,7 +230,11 @@ function Game1({ onNext }) {
         continueLabel="Вперёд"
         lunoAvatarUrls={LUNO_AVATAR_URLS}
       >
-        <p>Ты завершил игру 1 и успешно разобрал базовые схемы финансового мошенничества.</p>
+        <p>
+          <RichText>
+            Ты завершил игру 1 и успешно разобрал **базовые схемы финансового мошенничества**.
+          </RichText>
+        </p>
       </LunoVictoryScreen>
     )
   }
@@ -341,7 +345,11 @@ function Game2({ onNext }) {
         continueLabel="Вперёд"
         lunoAvatarUrls={LUNO_AVATAR_URLS}
       >
-        <p>Игра 2 пройдена. Ты потренировался выбирать безопасные действия в разных ситуациях.</p>
+        <p>
+          <RichText>
+            Игра 2 пройдена. Ты потренировался выбирать **безопасные действия** в разных ситуациях.
+          </RichText>
+        </p>
       </LunoVictoryScreen>
     )
   }
@@ -417,7 +425,11 @@ function Test({ onComplete }) {
         continueLabel="К выбору уровней"
         lunoAvatarUrls={LUNO_AVATAR_URLS}
       >
-        <p>Отлично! Ты разобрал схемы финансового мошенничества и закрепил правила безопасного поведения.</p>
+        <p>
+          <RichText>
+            Отлично! Ты разобрал **схемы финансового мошенничества** и закрепил **правила безопасного поведения**.
+          </RichText>
+        </p>
       </LunoVictoryScreen>
     )
   }
@@ -434,7 +446,7 @@ function Test({ onComplete }) {
         </p>
         <p className="l2-sub">Слова: {randomized[step].bank.join(', ')}</p>
         {fillBlocks[step].lines.map((ln, i) => (
-          <p key={i}>
+          <p key={i} className="l-test-fill-line">
             {ln[0]}{' '}
             <select
               value={fills[`${step}_${i}`] || ''}

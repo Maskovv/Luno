@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { RichText } from '../../../shared/components/RichText'
 import { consequencesCards } from './level2FlowData'
 import { LunoVictoryScreen } from '../../../shared/components/LunoVictoryScreen'
 import './level2.css'
@@ -35,8 +36,12 @@ export function ConsequencesGrid({ onComplete, lunoAvatarUrls }) {
             >
               {isOpen ? (
                 <>
-                  <div className="l2-cons-title">{c.title}</div>
-                  <div className="l2-cons-body">{c.text}</div>
+                  <div className="l2-cons-title">
+                    <RichText>{c.title}</RichText>
+                  </div>
+                  <div className="l2-cons-body">
+                    <RichText>{c.text}</RichText>
+                  </div>
                 </>
               ) : (
                 <span className="l2-cons-emoji" aria-hidden>
@@ -54,7 +59,9 @@ export function ConsequencesGrid({ onComplete, lunoAvatarUrls }) {
           continueLabel="К тесту"
           lunoAvatarUrls={lunoAvatarUrls}
         >
-          <p>Теперь ты понимаешь, почему важно проверять сайты и письма.</p>
+          <p>
+            <RichText>Теперь ты понимаешь, почему важно **проверять сайты и письма**.</RichText>
+          </p>
         </LunoVictoryScreen>
       )}
     </div>

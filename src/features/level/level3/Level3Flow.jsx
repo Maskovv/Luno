@@ -98,64 +98,486 @@ function shuffleArray(items) {
   return arr
 }
 
-function MazeGame({ onNext }) {
-  const W = 12
-  const H = 12
-  const start = { x: 0, y: 0 }
-  const finish = { x: 11, y: 11 }
+function cellKey(x, y) {
+  return `${x},${y}`
+}
 
-  /**
-   * Пол 12×12: `.` — проход, `#` — стена. База — генерация «трактором» (DFS, шаг 2 по чётным узлам);
-   * затем добиты коридоры, чтобы старт, все угрозы и финиш (11,11) лежали в одной связной сети.
-   */
-  const MAZE_ROWS = [
-    '.#.....#...#',
-    '.#.###.###.#',
-    '...#.#.....#',
-    '####.#####.#',
-    '.#.......#.#',
-    '.#.###.###.#',
-    '...#.#.....#',
-    '.###.#.#.###',
-    '.#...#.#.#.#',
-    '.###.#.#.#.#',
-    '.....#......',
-    '###########.',
-  ]
+const MAZE_DIRS = [
+  { dx: 1, dy: 0 },
+  { dx: -1, dy: 0 },
+  { dx: 0, dy: 1 },
+  { dx: 0, dy: -1 },
+]
 
-  const pathCells = new Set()
-  for (let y = 0; y < H; y += 1) {
-    for (let x = 0; x < W; x += 1) {
-      if (MAZE_ROWS[y][x] === '.') pathCells.add(`${x},${y}`)
-    }
-  }
-
+function buildMazeByTractor(width, height, tractorCount = 1) {
   const walls = new Set()
-  for (let y = 0; y < H; y += 1) {
-    for (let x = 0; x < W; x += 1) {
-      const key = `${x},${y}`
-      if (!pathCells.has(key)) walls.add(key)
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) walls.add(cellKey(x, y))
+  }
+
+  const carve = (x, y) => {
+    const key = cellKey(x, y)
+    walls.delete(key)
+    return key
+  }
+
+  const isEvenCell = (x, y) =>
+    x >= 0 &&
+    y >= 0 &&
+    x < width &&
+    y < height &&
+    x % 2 === 0 &&
+    y % 2 === 0
+
+  const evenXs = []
+  const evenYs = []
+  for (let x = 0; x < width; x += 1) if (x % 2 === 0) evenXs.push(x)
+  for (let y = 0; y < height; y += 1) if (y % 2 === 0) evenYs.push(y)
+
+  const totalEvenCells = evenXs.length * evenYs.length
+  const visitedEven = new Set()
+  const tractors = []
+  const usedStarts = new Set()
+  // Всегда оставляем трактор в старте, чтобы структура росла от входа.
+  tractors.push({ x: 0, y: 0 })
+  usedStarts.add(cellKey(0, 0))
+  visitedEven.add(carve(0, 0))
+  while (tractors.length < tractorCount) {
+    const x = evenXs[Math.floor(Math.random() * evenXs.length)]
+    const y = evenYs[Math.floor(Math.random() * evenYs.length)]
+    const key = cellKey(x, y)
+    if (usedStarts.has(key)) continue
+    usedStarts.add(key)
+    tractors.push({ x, y })
+    visitedEven.add(carve(x, y))
+  }
+
+  let guard = 0
+  while (visitedEven.size < totalEvenCells && guard < 700000) {
+    guard += 1
+    const tIndex = Math.floor(Math.random() * tractors.length)
+    const tractor = tractors[tIndex]
+    const dir = MAZE_DIRS[Math.floor(Math.random() * MAZE_DIRS.length)]
+    const nx = tractor.x + dir.dx * 2
+    const ny = tractor.y + dir.dy * 2
+    if (!isEvenCell(nx, ny)) continue
+    carve(tractor.x + dir.dx, tractor.y + dir.dy)
+    visitedEven.add(carve(nx, ny))
+    tractors[tIndex] = { x: nx, y: ny }
+  }
+
+  // Гарантируем проход к финишу в правом нижнем углу.
+  carve(width - 1, height - 1)
+  carve(width - 2, height - 1)
+  carve(width - 1, height - 2)
+  carve(width - 2, height - 2)
+
+  return walls
+}
+
+function parsePoint(key) {
+  const [x, y] = key.split(',').map(Number)
+  return { x, y }
+}
+
+function manhattan(a, b) {
+  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
+}
+
+function openNeighborsCount(walls, width, height, x, y) {
+  let count = 0
+  for (const { dx, dy } of MAZE_DIRS) {
+    const nx = x + dx
+    const ny = y + dy
+    if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue
+    if (!walls.has(cellKey(nx, ny))) count += 1
+  }
+  return count
+}
+
+function buildPerfectMaze(width, height) {
+  const walls = new Set()
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) walls.add(cellKey(x, y))
+  }
+  const carve = (x, y) => walls.delete(cellKey(x, y))
+  const inBounds = (x, y) => x >= 0 && y >= 0 && x < width && y < height
+
+  const stack = [{ x: 0, y: 0 }]
+  carve(0, 0)
+
+  while (stack.length) {
+    const cur = stack[stack.length - 1]
+    const candidates = []
+    for (const { dx, dy } of MAZE_DIRS) {
+      const nx = cur.x + dx * 2
+      const ny = cur.y + dy * 2
+      if (!inBounds(nx, ny)) continue
+      if (!walls.has(cellKey(nx, ny))) continue
+      candidates.push({ nx, ny, mx: cur.x + dx, my: cur.y + dy })
+    }
+    if (!candidates.length) {
+      stack.pop()
+      continue
+    }
+    const pick = candidates[Math.floor(Math.random() * candidates.length)]
+    carve(pick.mx, pick.my)
+    carve(pick.nx, pick.ny)
+    stack.push({ x: pick.nx, y: pick.ny })
+  }
+
+  // Финиш обязательно достижим.
+  carve(width - 1, height - 1)
+  carve(width - 2, height - 1)
+  carve(width - 1, height - 2)
+  return walls
+}
+
+function bfsDistances(walls, width, height, start) {
+  const q = [start]
+  const dist = new Map([[cellKey(start.x, start.y), 0]])
+  let qi = 0
+  while (qi < q.length) {
+    const cur = q[qi]
+    qi += 1
+    const curKey = cellKey(cur.x, cur.y)
+    const curDist = dist.get(curKey) ?? 0
+    for (const { dx, dy } of MAZE_DIRS) {
+      const nx = cur.x + dx
+      const ny = cur.y + dy
+      if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue
+      const nKey = cellKey(nx, ny)
+      if (walls.has(nKey) || dist.has(nKey)) continue
+      dist.set(nKey, curDist + 1)
+      q.push({ x: nx, y: ny })
+    }
+  }
+  return dist
+}
+
+function mazeComplexityScore(walls, width, height, start, finish) {
+  const distMap = bfsDistances(walls, width, height, start)
+  const finishDist = distMap.get(cellKey(finish.x, finish.y))
+  if (finishDist == null) return -Infinity
+
+  let openCount = 0
+  let deadEnds = 0
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      if (walls.has(cellKey(x, y))) continue
+      openCount += 1
+      const n = openNeighborsCount(walls, width, height, x, y)
+      if (n === 1) deadEnds += 1
     }
   }
 
-  const checkpoints = [
-    { id: 'virus', x: 0, y: 2, icon: '🦠' },
-    { id: 'spy', x: 2, y: 2, icon: '🕵' },
-    { id: 'ransom', x: 4, y: 2, icon: '💸' },
-    { id: 'adware', x: 6, y: 4, icon: '📢' },
-    { id: 'trojan', x: 7, y: 6, icon: '🐴' },
-  ]
+  // Длина пути + тупики + плотность стен.
+  return finishDist * 22 + deadEnds * 12 - openCount
+}
+
+function buildMazeSetup(width, height, start, finish) {
+  let bestWalls = null
+  let bestScore = -Infinity
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    const walls = buildPerfectMaze(width, height)
+    const score = mazeComplexityScore(walls, width, height, start, finish)
+    if (score > bestScore) {
+      bestScore = score
+      bestWalls = walls
+    }
+  }
+  const walls = bestWalls || buildPerfectMaze(width, height)
+  const pathCells = []
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const key = cellKey(x, y)
+      if (!walls.has(key)) pathCells.push(key)
+    }
+  }
+
+  const threatIds = ['virus', 'spy', 'ransom', 'adware', 'trojan']
+  const checkpointTypes = [...threatIds, ...threatIds]
+  const threatIcons = { virus: '🦠', spy: '🕵', ransom: '💸', adware: '📢', trojan: '🧩' }
+  const candidates = shuffleArray(
+    pathCells.filter((key) => {
+      const { x, y } = parsePoint(key)
+      if (x === start.x && y === start.y) return false
+      if (x === finish.x && y === finish.y) return false
+      const distFromStart = Math.abs(x - start.x) + Math.abs(y - start.y)
+      const distFromFinish = Math.abs(x - finish.x) + Math.abs(y - finish.y)
+      return distFromStart > 4 && distFromFinish > 3
+    }),
+  )
+
+  const selectedPoints = []
+  for (const key of candidates) {
+    if (selectedPoints.length >= checkpointTypes.length) break
+    const point = parsePoint(key)
+    if (
+      selectedPoints.some((p) => manhattan(p, point) < 4) ||
+      manhattan(point, start) < 5 ||
+      manhattan(point, finish) < 5
+    ) {
+      continue
+    }
+    selectedPoints.push(point)
+  }
+
+  while (selectedPoints.length < checkpointTypes.length) {
+    const fallback = parsePoint(pathCells[Math.min(selectedPoints.length + 1, pathCells.length - 1)])
+    selectedPoints.push(fallback)
+  }
+
+  const checkpoints = checkpointTypes.map((type, idx) => {
+    const point = selectedPoints[idx]
+    return {
+      id: `cp_${idx}_${type}`,
+      threatType: type,
+      x: point.x,
+      y: point.y,
+      icon: threatIcons[type],
+    }
+  })
+
+  return { walls, checkpoints }
+}
+
+/** stage 1 = первый экран; stage 2 = последствия/подробности */
+function ThreatScreenVisual({ threat, stage, onAdvance }) {
+  const s = threat?.screen
+  if (!s) return null
+
+  if (s.kind === 'virus') {
+    if (stage === 1) {
+      return (
+        <div className="l3-threat-screen" aria-hidden>
+          <div className="l3-mock-window">
+            <div className="l3-mock-window-bar">
+              <span className="l3-mock-dots" />
+              <span className="l3-mock-window-title">Скачать игру</span>
+            </div>
+            <div className="l3-mock-window-body">
+              <div className="l3-mock-file-row">
+                <span className="l3-mock-file-ico">🎮</span>
+                <span className="l3-mock-file-name">{s.fileName}</span>
+              </div>
+              <button type="button" className="l3-mock-btn-open" onClick={onAdvance}>
+                Скачать
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="l3-threat-screen" aria-hidden>
+        <ul className="l3-threat-screen-list">
+          {threat.symptoms.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+        <button type="button" className="l3-mock-btn-open l3-mock-next-inline" onClick={onAdvance}>
+          Что это такое?
+        </button>
+      </div>
+    )
+  }
+
+  if (s.kind === 'spy') {
+    if (stage === 1) {
+      return (
+        <div className="l3-threat-screen" aria-hidden>
+          <div className="l3-mock-window l3-mock-window--narrow">
+            <div className="l3-mock-window-bar">
+              <span className="l3-mock-dots" />
+              <span className="l3-mock-window-title">Скачать приложение</span>
+            </div>
+            <div className="l3-mock-window-body l3-mock-window-body--tight">
+              <span className="l3-mock-tag-ok">скачано</span>
+              <button type="button" className="l3-mock-btn-open" onClick={onAdvance}>
+                Проверить доступ для приложения
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="l3-threat-screen" aria-hidden>
+        <div className="l3-mock-perms l3-mock-perms--solo">
+          <p className="l3-mock-perms-title">Доступ приложения</p>
+          <p className="l3-mock-perms-note">Полный доступ включён и не редактируется.</p>
+          <ul className="l3-mock-perm-list">
+            {s.permLabels.map((label) => (
+              <li key={label} className="l3-mock-perm-row">
+                <span>{label}</span>
+                <span className="l3-mock-toggle l3-mock-toggle--on" aria-hidden>
+                  вкл
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="l3-mock-notice-login" aria-hidden>
+          <p className="l3-mock-notice-title">Уведомление безопасности</p>
+          <p className="l3-mock-notice-text">В аккаунт выполнен вход с нового устройства</p>
+        </div>
+        <ul className="l3-threat-screen-list">
+          {threat.symptoms.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+        <button type="button" className="l3-mock-btn-open l3-mock-next-inline" onClick={onAdvance}>
+          Что это такое?
+        </button>
+      </div>
+    )
+  }
+
+  if (s.kind === 'ransom') {
+    if (stage === 1) {
+      return (
+        <div className="l3-threat-screen" aria-hidden>
+          <div className="l3-mock-window l3-mock-window--dl">
+            <div className="l3-mock-window-bar">
+              <span className="l3-mock-dots" />
+              <span className="l3-mock-window-title">Архив</span>
+            </div>
+            <div className="l3-mock-window-body">
+              <div className="l3-mock-file-row">
+                <span className="l3-mock-file-ico">📦</span>
+                <span className="l3-mock-file-name">{s.fileName}</span>
+              </div>
+              <button type="button" className="l3-mock-btn-open" onClick={onAdvance}>
+                Открыть файл
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="l3-threat-screen" aria-hidden>
+        <div className="l3-mock-ransom">
+          <p className="l3-mock-ransom-skull" aria-hidden>
+            ☠
+          </p>
+          <p className="l3-mock-ransom-msg">{threat.ransomMessage}</p>
+        </div>
+        <button type="button" className="l3-mock-btn-open l3-mock-next-inline" onClick={onAdvance}>
+          Что это такое?
+        </button>
+      </div>
+    )
+  }
+
+  if (s.kind === 'adware') {
+    if (stage === 1) {
+      return (
+        <div className="l3-threat-screen" aria-hidden>
+          <div className="l3-mock-browser">
+            <div className="l3-mock-browser-bar">
+              <span className="l3-mock-browser-dot" />
+              <span className="l3-mock-browser-dot" />
+              <span className="l3-mock-browser-dot" />
+              <span className="l3-mock-browser-url">браузер</span>
+            </div>
+            <div className="l3-mock-browser-body">
+              <button type="button" className="l3-mock-btn-open" onClick={onAdvance}>
+                {s.actionLabel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="l3-threat-screen" aria-hidden>
+        <div className="l3-mock-ads-cloud" aria-hidden>
+          <span className="l3-mock-ad-chip">СУПЕР СКИДКА</span>
+          <span className="l3-mock-ad-chip">ВЫ ВЫИГРАЛИ ПРИЗ</span>
+          <span className="l3-mock-ad-chip">СРОЧНО ОБНОВИТЕ</span>
+          <span className="l3-mock-ad-chip">КЛИКНИ СЕЙЧАС</span>
+          <span className="l3-mock-ad-chip">+100% БОНУС</span>
+        </div>
+        <ul className="l3-threat-screen-list l3-threat-screen-list--tight">
+          {threat.symptoms.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+        <button type="button" className="l3-mock-btn-open l3-mock-next-inline" onClick={onAdvance}>
+          Что это такое?
+        </button>
+      </div>
+    )
+  }
+
+  if (s.kind === 'trojan') {
+    if (stage === 1) {
+      return (
+        <div className="l3-threat-screen" aria-hidden>
+          <div className="l3-mock-window l3-mock-window--dl">
+            <div className="l3-mock-window-bar">
+              <span className="l3-mock-dots" />
+              <span className="l3-mock-window-title">Загрузки</span>
+            </div>
+            <div className="l3-mock-window-body">
+              <div className="l3-mock-file-row">
+                <span className="l3-mock-file-ico">🧩</span>
+                <span className="l3-mock-file-name">{s.fileName}</span>
+              </div>
+              <button type="button" className="l3-mock-btn-open" onClick={onAdvance}>
+                Запустить
+              </button>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="l3-threat-screen" aria-hidden>
+        <ul className="l3-threat-screen-list">
+          {threat.symptoms.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+        <button type="button" className="l3-mock-btn-open l3-mock-next-inline" onClick={onAdvance}>
+          Что это такое?
+        </button>
+      </div>
+    )
+  }
+
+  return null
+}
+
+function MazeGame({ onNext }) {
+  const W = 20
+  const H = 20
+  const start = { x: 0, y: 0 }
+  const finish = { x: W - 1, y: H - 1 }
+  const maze = useMemo(() => buildMazeSetup(W, H, start, finish), [])
+  const walls = maze.walls
+  const checkpoints = maze.checkpoints
 
   const [pos, setPos] = useState(start)
   const [visited, setVisited] = useState(new Set([`${start.x},${start.y}`]))
   const [resolved, setResolved] = useState({})
-  const [activeThreat, setActiveThreat] = useState(null)
+  const [activeCheckpointId, setActiveCheckpointId] = useState(null)
   const [selected, setSelected] = useState([])
   const [err, setErr] = useState('')
   const [hint, setHint] = useState(
-    'Запутанный лабиринт: развилки, повороты и тупики. Обезвредь все 5 угроз и дойди до выхода.',
+    'Запутанный лабиринт 20×20: развилки, повороты и тупики. Обезвредь все 5 угроз и дойди до выхода.',
   )
   const [done, setDone] = useState(false)
+  /** visual1 → visual2 → luno → quiz */
+  const [threatPhase, setThreatPhase] = useState('visual1')
+
+  useEffect(() => {
+    setSelected([])
+    setErr('')
+    setThreatPhase('visual1')
+  }, [activeCheckpointId])
 
   const cpMap = useMemo(() => {
     const m = new Map()
@@ -163,16 +585,17 @@ function MazeGame({ onNext }) {
     return m
   }, [])
 
-  const curThreat = threats.find((t) => t.id === activeThreat)
+  const activeCheckpoint = activeCheckpointId ? checkpoints.find((c) => c.id === activeCheckpointId) : null
+  const curThreat = activeCheckpoint ? threats.find((t) => t.id === activeCheckpoint.threatType) : null
   const curOptions = useMemo(
     () => (curThreat ? shuffleArray([...curThreat.ok, ...curThreat.bad]) : []),
-    [curThreat],
+    [curThreat, activeCheckpointId],
   )
 
   const canMove = (x, y) => x >= 0 && y >= 0 && x < W && y < H && !walls.has(`${x},${y}`)
 
   const move = (dx, dy) => {
-    if (activeThreat) return
+    if (activeCheckpointId) return
     const nx = pos.x + dx
     const ny = pos.y + dy
     if (!canMove(nx, ny)) return
@@ -180,8 +603,8 @@ function MazeGame({ onNext }) {
     setVisited((v) => new Set([...v, `${nx},${ny}`]))
     const cp = cpMap.get(`${nx},${ny}`)
     if (cp && !resolved[cp.id]) {
-      setActiveThreat(cp.id)
-      setHint('Опасность обнаружена. Выбери правильные действия.')
+      setActiveCheckpointId(cp.id)
+      setHint('Опасность обнаружена. Разбери ситуацию на экране, выслушай Луно и выбери действия.')
     } else if (nx === finish.x && ny === finish.y) {
       const allResolved = checkpoints.every((c) => resolved[c.id])
       if (allResolved) {
@@ -204,8 +627,8 @@ function MazeGame({ onNext }) {
     }
     setErr('')
     setSelected([])
-    setResolved((r) => ({ ...r, [curThreat.id]: true }))
-    setActiveThreat(null)
+    setResolved((r) => ({ ...r, [activeCheckpoint.id]: true }))
+    setActiveCheckpointId(null)
     setHint('Угроза устранена. Продолжай путь к выходу.')
   }
 
@@ -217,7 +640,19 @@ function MazeGame({ onNext }) {
         continueLabel="Вперёд"
         lunoAvatarUrls={LUNO_AVATAR_URLS}
       >
-        <p>Лабиринт пройден, все угрозы обезврежены.</p>
+        <p>
+          <RichText>
+            — Поздравляю! 🎉 Теперь вы знаете, как **защитить себя от вирусов**.
+          </RichText>
+        </p>
+        <p>
+          <RichText>
+            — Помните: **ваши знания** могут помочь не только вам, но и **вашим друзьям**.
+          </RichText>
+        </p>
+        <p>
+          <RichText>— **Делитесь** ими и будьте **внимательны в интернете**.</RichText>
+        </p>
       </LunoVictoryScreen>
     )
   }
@@ -227,7 +662,7 @@ function MazeGame({ onNext }) {
       <h2 className="l2-title">Игра 1: Лабиринт угроз</h2>
       <p className="l2-sub">
         Интернет можно сравнить с лабиринтом: есть развилки, повороты и короткие тупики, а угрозы стоят на
-        пути к выходу. Обезвредь все 5 угроз и дойди до зелёной клетки.
+        пути к выходу. Обезвредь все угрозы и дойди до зелёной клетки.
       </p>
 
       <div className="l3-maze-wrap">
@@ -271,31 +706,67 @@ function MazeGame({ onNext }) {
       </div>
 
       <p className="l2-progress">
-        Обезврежено угроз: {Object.keys(resolved).length} / 5
+        Обезврежено угроз: {Object.keys(resolved).length} / {checkpoints.length}
       </p>
       <p className="l2-sub">{hint}</p>
 
-      {activeThreat && curThreat && (
-        <div className="l3-threat-overlay" role="presentation">
+      {activeCheckpointId && curThreat && (
+        <div className="l3-threat-overlay" role="dialog" aria-modal="true" aria-labelledby="l3-threat-title">
           <div className="l3-threat-modal">
-            <p><strong>{curThreat.title}</strong></p>
-            <p>{curThreat.text}</p>
-            <div className="l2-opts">
-              {curOptions.map((o) => (
-                <label key={o} className="l2-opt">
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(o)}
-                    onChange={() => toggle(o)}
-                  />
-                  {o}
-                </label>
-              ))}
-            </div>
-            {err && <p className="l2-err">{err}</p>}
-            <button type="button" className="l2-primary" onClick={submitThreat}>
-              Применить действия
-            </button>
+            <h3 id="l3-threat-title" className="l3-threat-heading">
+              {curThreat.title}
+            </h3>
+
+            {threatPhase === 'visual1' && (
+              <ThreatScreenVisual threat={curThreat} stage={1} onAdvance={() => setThreatPhase('visual2')} />
+            )}
+            {threatPhase === 'visual2' && (
+              <ThreatScreenVisual threat={curThreat} stage={2} onAdvance={() => setThreatPhase('luno')} />
+            )}
+
+            {threatPhase === 'luno' && (
+              <div className="l3-threat-luno-step">
+                <div className="l3-threat-luno-avatar">
+                  <div className="avatar-circle l3-threat-luno-avatar-circle">
+                    <LunoPhoto urls={LUNO_AVATAR_URLS} className="l3-threat-luno-img" alt="" />
+                  </div>
+                  <span className="l3-threat-luno-name">Луно</span>
+                </div>
+                <div className="l3-threat-luno-bubble">
+                  {(Array.isArray(curThreat.luno) ? curThreat.luno : [curThreat.luno]).map((line, i) => (
+                    <p key={i}>
+                      <RichText>{line}</RichText>
+                    </p>
+                  ))}
+                  <button type="button" className="l3-mock-btn-open l3-mock-next-inline" onClick={() => setThreatPhase('quiz')}>
+                    Что делать?
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {threatPhase === 'quiz' && (
+              <>
+                <p className="l3-threat-pick">Выбери все подходящие действия:</p>
+                <div className="l2-opts">
+                  {curOptions.map((o) => (
+                    <label key={o} className="l2-opt">
+                      <input
+                        type="checkbox"
+                        checked={selected.includes(o)}
+                        onChange={() => toggle(o)}
+                      />
+                      {o}
+                    </label>
+                  ))}
+                </div>
+                {err && <p className="l2-err">{err}</p>}
+                <button type="button" className="l2-primary" onClick={submitThreat}>
+                  Применить действия
+                </button>
+              </>
+            )}
+
           </div>
         </div>
       )}
@@ -511,7 +982,7 @@ function Level3Test({ onComplete }) {
                 <p className="l2-q-title">{task.title}</p>
                 <p className="l2-sub">Слова: {task.bank.join(', ')}</p>
                 {task.lines.map((line, i) => (
-                  <p key={i}>
+                  <p key={i} className="l-test-fill-line">
                     {line[0]}{' '}
                     <select
                       value={fills[`${fillIdx}_${i}`] || ''}
@@ -556,7 +1027,11 @@ function Level3Test({ onComplete }) {
           continueLabel="К выбору уровней"
           lunoAvatarUrls={LUNO_AVATAR_URLS}
         >
-          <p>Отлично! Ты закрепил правила цифровой безопасности.</p>
+          <p>
+            <RichText>
+              Отлично! Ты закрепил **правила цифровой безопасности**.
+            </RichText>
+          </p>
         </LunoVictoryScreen>
       )}
     </div>
@@ -650,7 +1125,9 @@ export function Level3Flow() {
           className="l3-fullscreen-congrats"
           onClick={next}
         >
-          <span className="l3-fullscreen-congrats-line">{item.line}</span>
+          <span className="l3-fullscreen-congrats-line">
+            <RichText>{item.line}</RichText>
+          </span>
           <span className="l3-fullscreen-congrats-hint">Нажми, чтобы продолжить</span>
         </button>
         {teacherSkip}
@@ -667,7 +1144,9 @@ export function Level3Flow() {
           continueLabel="К тесту"
           lunoAvatarUrls={LUNO_AVATAR_URLS}
         >
-          <p>Проверь знания в коротком тесте.</p>
+          <p>
+            <RichText>Проверь знания в **коротком тесте**.</RichText>
+          </p>
         </LunoVictoryScreen>
         {teacherSkip}
       </>
