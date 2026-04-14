@@ -913,4 +913,10 @@
 
 .l5-privacy-err {
   margin-top: 8px;
+  color: #b71c1c;
+  font-weight: 700;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  padding: 8px 10px;
 }

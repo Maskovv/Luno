@@ -87,6 +87,13 @@ function arraysEq(a, b) {
   return true
 }
 
+function splitExplainToReplicas(text) {
+  return String(text || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+}
+
 function LunoModal({ title, text, onClose, isError = false, lunoAvatarUrls }) {
   const raw = String(text || '')
   const lines = raw.includes('\n') ? raw.split('\n').filter(Boolean) : [raw]
@@ -289,6 +296,7 @@ function Game2({ onNext }) {
   const [idx, setIdx] = useState(0)
   const [pick, setPick] = useState([])
   const [modal, setModal] = useState(null)
+  const [replicaIdx, setReplicaIdx] = useState(0)
   const [done, setDone] = useState(false)
   const cur = game2Cases[idx]
   const isSingle = cur.correct.length === 1
@@ -297,15 +305,26 @@ function Game2({ onNext }) {
   const submit = () => {
     if (!arraysEq(pick, cur.correct)) {
       setModal({ ok: false, text: cur.wrongExplain || 'Попробуй ещё раз.' })
+      setReplicaIdx(0)
       return
     }
     setModal({ ok: true, text: cur.explain })
+    setReplicaIdx(0)
   }
 
   const nextCase = () => {
     const wasOk = modal?.ok
+    if (!wasOk) {
+      setModal(null)
+      return
+    }
+    const replicas = splitExplainToReplicas(modal?.text)
+    if (replicaIdx < replicas.length - 1) {
+      setReplicaIdx((i) => i + 1)
+      return
+    }
     setModal(null)
-    if (!wasOk) return
+    setReplicaIdx(0)
     setPick([])
     if (idx === game2Cases.length - 1) {
       setDone(true)
@@ -356,7 +375,7 @@ function Game2({ onNext }) {
       {modal && (
         <LunoModal
           title={modal.ok ? 'Верно! Молодец!' : 'Неверно :('}
-          text={modal.text}
+          text={modal.ok ? splitExplainToReplicas(modal.text)[replicaIdx] || '' : modal.text}
           onClose={nextCase}
           isError={!modal.ok}
           lunoAvatarUrls={LUNO_AVATAR_URLS}

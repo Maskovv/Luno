@@ -67,8 +67,14 @@ export const level1Flow = [
   {
     type: 'dialogue',
     character: 'Ваня',
-    text: 'Ваня достаёт телефон. На экране появляется Луно.',
-    bgKey: 'mashaShowsPhone',
+    text: 'Это мой помощник. Он как раз помогает разбираться в таких ситуациях.',
+    bgKey: 'lunoHologram',
+  },
+  {
+    type: 'dialogue',
+    character: 'Ваня',
+    text: 'Луно, с чем столкнулась Маша?',
+    bgKey: 'lunoHologram',
   },
   {
     type: 'dialogue',

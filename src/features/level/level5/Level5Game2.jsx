@@ -64,6 +64,7 @@ export function Level5Game2({ onNext }) {
           : 'Луно:\n— Подумай ещё раз: колонка «ошибочные» — для самообвинений и паники, «здоровые» — для опоры и заботы о себе. Сверь смысл фразы с подписью колонки.',
       )
     }
+    if (!correct) return
     if (zone === 'wrong') setLeft((s) => [...s, pick])
     else setRight((s) => [...s, pick])
     setPick('')

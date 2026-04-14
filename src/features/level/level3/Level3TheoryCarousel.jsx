@@ -1,15 +1,31 @@
 import { useEffect, useState } from 'react'
 import { LunoPhoto } from '../../../shared/components/LunoPhoto'
+import { RichText } from '../../../shared/components/RichText'
 import { virusTheorySlides } from './level3FlowData'
 import './level3.css'
 
+const THREAT_NAME = {
+  virus: 'Вирус',
+  spy: 'Шпионская программа',
+  ransom: 'Программа-вымогатель',
+  adware: 'Рекламное ПО',
+  trojan: 'Троян',
+}
+
 function LunoBlock({ block }) {
-  if (block.type === 'p') return <p className="l3-theory-luno-p">{block.text}</p>
+  if (block.type === 'p')
+    return (
+      <p className="l3-theory-luno-p">
+        <RichText>{block.text}</RichText>
+      </p>
+    )
   if (block.type === 'ul')
     return (
       <ul className="l3-theory-luno-ul">
         {block.items.map((it) => (
-          <li key={it}>{it}</li>
+          <li key={it}>
+            <RichText>{it}</RichText>
+          </li>
         ))}
       </ul>
     )
@@ -43,9 +59,6 @@ export function Level3TheoryCarousel({ lunoAvatarUrls, onNext }) {
   return (
     <div className="l2-card l3-theory-wrap">
       <h2 className="l2-title">Типы вредоносных программ</h2>
-      <p className="l2-sub">
-        Сначала слушаем Луно, затем смотрим карточку с подробностями ({slideIdx + 1} из {virusTheorySlides.length}).
-      </p>
 
       <div className="l3-theory-stage" key={`${slideIdx}-${onLuno ? 'l' : 'c'}`}>
         {onLuno ? (
@@ -66,6 +79,9 @@ export function Level3TheoryCarousel({ lunoAvatarUrls, onNext }) {
               <div className="l3-slide-emoji-title">
                 <span aria-hidden>{slide.emoji}</span>
               </div>
+              <p className="l3-card-h">
+                <RichText>{`**${THREAT_NAME[slide.key] || 'Тип угрозы'}**`}</RichText>
+              </p>
               <p className="l3-card-h">{slide.detectTitle}</p>
               <ul className="l3-card-list">
                 {slide.detect.map((d) => (

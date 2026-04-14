@@ -9,7 +9,6 @@ export const virusTheorySlides = [
     key: 'virus',
     emoji: '🦠',
     lunoBlocks: [
-      { type: 'p', text: '— Вирус' },
       {
         type: 'p',
         text:
@@ -37,7 +36,6 @@ export const virusTheorySlides = [
     key: 'spy',
     emoji: '🕵',
     lunoBlocks: [
-      { type: 'p', text: '— Шпионская программа' },
       { type: 'p', text: '— Такие программы собирают информацию о пользователе без его ведома.' },
       { type: 'p', text: '— Например:' },
       { type: 'ul', items: ['пароли', 'сообщения', 'действия в интернете'] },
@@ -66,7 +64,6 @@ export const virusTheorySlides = [
     key: 'ransom',
     emoji: '💸',
     lunoBlocks: [
-      { type: 'p', text: '— Программа-вымогатель' },
       {
         type: 'p',
         text: '— Эти программы блокируют устройство или файлы и требуют деньги за восстановление доступа.',
@@ -87,7 +84,6 @@ export const virusTheorySlides = [
     key: 'adware',
     emoji: '📢',
     lunoBlocks: [
-      { type: 'p', text: '— Рекламное ПО' },
       { type: 'p', text: '— Показывает навязчивую рекламу.' },
       { type: 'p', text: '— Может:' },
       { type: 'ul', items: ['открывать окна', 'перенаправлять на сайты'] },
@@ -111,7 +107,6 @@ export const virusTheorySlides = [
     key: 'trojan',
     emoji: '🧩',
     lunoBlocks: [
-      { type: 'p', text: '— Троян' },
       {
         type: 'p',
         text: '— Маскируется под полезную программу, но внутри скрывает угрозу. Он часто используется киберпреступниками для кражи личных данных, слежения за пользователями и получения несанкционированного доступа к системам.',

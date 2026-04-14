@@ -21,15 +21,15 @@ export function Level5Test({ onComplete }) {
       return
     }
     setErr('')
-    if (last) {
-      onComplete()
-      return
-    }
     setLunoOpen(true)
   }
 
   const afterLuno = () => {
     setLunoOpen(false)
+    if (last) {
+      onComplete()
+      return
+    }
     setPicked(null)
     setIdx((i) => i + 1)
   }
@@ -79,16 +79,15 @@ export function Level5Test({ onComplete }) {
 }
 
 export function Level5FinalVictory({ onFinish }) {
-  const line = TEST_QUESTIONS[TEST_QUESTIONS.length - 1].luno
   return (
     <LunoVictoryScreen
-      title="Уровень 5 пройден!"
+      title="Поздравляем!"
       onContinue={onFinish}
       continueLabel="К выбору уровней"
       lunoAvatarUrls={LUNO_AVATAR_URLS}
     >
       <p>
-        <RichText>{line}</RichText>
+        Спасибо за игру! Ты прошёл все уровни и освоил важные правила цифровой безопасности.
       </p>
     </LunoVictoryScreen>
   )

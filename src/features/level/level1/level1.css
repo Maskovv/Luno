@@ -1070,7 +1070,7 @@
   margin: 0 0 6px !important;
   color: #1a237e !important;
   font-weight: 800;
-  font-size: 0.82rem;
+  font-size: 1.08rem;
   letter-spacing: 0.02em;
 }
 
@@ -1082,8 +1082,8 @@
 }
 
 .l1-dialogue-bubble-glass p:not(.l1-dialogue-speaker) {
-  font-size: 0.95rem;
-  line-height: 1.45;
+  font-size: 1.24rem;
+  line-height: 1.5;
 }
 
 .l1-tap-hint {
@@ -1144,7 +1144,7 @@
 
 @media (max-width: 640px) {
   .l1-dialogue-bubble-glass p:not(.l1-dialogue-speaker) {
-    font-size: 0.92rem;
+    font-size: 1.08rem;
   }
 
   .l1-cinematic-chrome {
