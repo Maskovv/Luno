@@ -99,47 +99,36 @@ function shuffleArray(items) {
 }
 
 function MazeGame({ onNext }) {
-  const W = 8
-  const H = 8
+  const W = 12
+  const H = 12
   const start = { x: 0, y: 0 }
-  const finish = { x: 7, y: 7 }
+  const finish = { x: 11, y: 11 }
 
-  const MAIN_PATH = [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [1, 2],
-    [2, 2],
-    [3, 2],
-    [4, 2],
-    [4, 3],
-    [5, 3],
-    [6, 3],
-    [6, 4],
-    [6, 5],
-    [7, 5],
-    [7, 6],
-    [7, 7],
+  /**
+   * Пол 12×12: `.` — проход, `#` — стена. База — генерация «трактором» (DFS, шаг 2 по чётным узлам);
+   * затем добиты коридоры, чтобы старт, все угрозы и финиш (11,11) лежали в одной связной сети.
+   */
+  const MAZE_ROWS = [
+    '.#.....#...#',
+    '.#.###.###.#',
+    '...#.#.....#',
+    '####.#####.#',
+    '.#.......#.#',
+    '.#.###.###.#',
+    '...#.#.....#',
+    '.###.#.#.###',
+    '.#...#.#.#.#',
+    '.###.#.#.#.#',
+    '.....#......',
+    '###########.',
   ]
 
-  const DEAD_ENDS = [
-    [1, 0],
-    [0, 3],
-    [0, 4],
-    [2, 1],
-    [4, 1],
-    [4, 0],
-    [4, 4],
-    [4, 5],
-    [6, 2],
-    [6, 1],
-    [6, 0],
-  ]
-
-  const pathCells = new Set([
-    ...MAIN_PATH.map(([x, y]) => `${x},${y}`),
-    ...DEAD_ENDS.map(([x, y]) => `${x},${y}`),
-  ])
+  const pathCells = new Set()
+  for (let y = 0; y < H; y += 1) {
+    for (let x = 0; x < W; x += 1) {
+      if (MAZE_ROWS[y][x] === '.') pathCells.add(`${x},${y}`)
+    }
+  }
 
   const walls = new Set()
   for (let y = 0; y < H; y += 1) {
@@ -164,7 +153,7 @@ function MazeGame({ onNext }) {
   const [selected, setSelected] = useState([])
   const [err, setErr] = useState('')
   const [hint, setHint] = useState(
-    'Коридор к выходу в одну клетку; от него отходят тупики. Обезвредь все 5 угроз на пути к финишу.',
+    'Запутанный лабиринт: развилки, повороты и тупики. Обезвредь все 5 угроз и дойди до выхода.',
   )
   const [done, setDone] = useState(false)
 
@@ -237,12 +226,16 @@ function MazeGame({ onNext }) {
     <div className="l2-card l3-cyber">
       <h2 className="l2-title">Игра 1: Лабиринт угроз</h2>
       <p className="l2-sub">
-        Интернет — как лабиринт: есть один путь к выходу в один ряд клеток (от угла до угла), по нему же
-        встречаются угрозы; ответвления ведут в тупики. Обезвредь все 5 угроз и дойди до зелёной клетки.
+        Интернет можно сравнить с лабиринтом: есть развилки, повороты и короткие тупики, а угрозы стоят на
+        пути к выходу. Обезвредь все 5 угроз и дойди до зелёной клетки.
       </p>
 
-      <div className="l3-maze-wrap l3-maze-wrap-side">
-        <div className="l3-maze-grid" style={{ gridTemplateColumns: `repeat(${W}, 1fr)` }}>
+      <div className="l3-maze-wrap">
+        <div className="l3-maze-plate">
+          <div
+            className="l3-maze-grid"
+            style={{ gridTemplateColumns: `repeat(${W}, minmax(0, 1fr))` }}
+          >
           {Array.from({ length: W * H }).map((_, i) => {
             const x = i % W
             const y = Math.floor(i / W)
@@ -265,14 +258,15 @@ function MazeGame({ onNext }) {
               </div>
             )
           })}
-        </div>
-        <div className="l3-maze-controls">
-          <button type="button" className="l2-good" onClick={() => move(0, -1)}>↑</button>
-          <div className="l3-row">
-            <button type="button" className="l2-good" onClick={() => move(-1, 0)}>←</button>
-            <button type="button" className="l2-good" onClick={() => move(1, 0)}>→</button>
           </div>
-          <button type="button" className="l2-good" onClick={() => move(0, 1)}>↓</button>
+          <div className="l3-maze-controls">
+            <button type="button" className="l2-good" onClick={() => move(0, -1)}>↑</button>
+            <div className="l3-row">
+              <button type="button" className="l2-good" onClick={() => move(-1, 0)}>←</button>
+              <button type="button" className="l2-good" onClick={() => move(1, 0)}>→</button>
+            </div>
+            <button type="button" className="l2-good" onClick={() => move(0, 1)}>↓</button>
+          </div>
         </div>
       </div>
 
