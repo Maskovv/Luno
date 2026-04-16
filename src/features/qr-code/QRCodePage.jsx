@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import './QRCodePage.css'
 import { useAuth } from '../auth'
@@ -8,6 +9,7 @@ import { UserAccountBar } from '../../shared/components/UserAccountBar'
 export function QRCodePage() {
   const [url, setUrl] = useState('')
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     let cancelled = false
@@ -24,6 +26,19 @@ export function QRCodePage() {
 
   return (
     <div className="qr-page">
+      <button
+        type="button"
+        className="qr-floating-back-button"
+        onClick={() => {
+          if (window.history.length > 1) {
+            navigate(-1)
+            return
+          }
+          navigate('/levels')
+        }}
+      >
+        ← Назад
+      </button>
       <div className="qr-page-top">
         <UserAccountBar tone="light" />
       </div>

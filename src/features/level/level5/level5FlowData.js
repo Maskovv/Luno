@@ -116,22 +116,22 @@ export const level5Flow = [
   {
     type: 'dialogue',
     bgKind: 'l5',
-    bgKey: 'scene3',
+    bgKey: 'scene4',
     character: 'Маша',
     text: '— Значит… это не потому, что со мной что-то не так?..',
   },
   {
     type: 'dialogue',
     bgKind: 'l5',
-    bgKey: 'scene3',
+    bgKey: 'scene4',
     character: 'Луно',
     text: '— Нет. **Кибербуллинг** — это поведение других людей, а не твоя вина.',
   },
-  { type: 'dialogue', bgKind: 'l5', bgKey: 'scene3', character: 'Маша', text: '— Мне стало немного легче…' },
+  { type: 'dialogue', bgKind: 'l5', bgKey: 'scene4', character: 'Маша', text: '— Мне стало немного легче…' },
   {
     type: 'dialogue',
     bgKind: 'l5',
-    bgKey: 'scene3',
+    bgKey: 'scene4',
     character: 'Луно',
     text: [
       '— Помни: мысли могут усиливать боль или помогать справиться с ней.',
@@ -152,14 +152,14 @@ export const level5Flow = [
   {
     type: 'dialogue',
     bgKind: 'l5',
-    bgKey: 'scene3',
+    bgKey: 'scene4',
     character: 'Луно',
     text: '— Ты молодец! Благодаря тебе Аня находится в **большей безопасности**!',
   },
   {
     type: 'dialogue',
     bgKind: 'l5',
-    bgKey: 'scene3',
+    bgKey: 'scene4',
     character: 'Маша',
     text: '— Спасибо, Луно, теперь мы знаем о кибербезопасности намного больше!',
   },

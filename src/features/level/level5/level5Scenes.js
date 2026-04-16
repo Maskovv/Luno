@@ -1,17 +1,25 @@
 /**
  * Фоны level5 и аватары — файлы в public/level5/ (Vanya.jpg, Anya.jpg, scene_1…4).
+ * Сцены 3 и 4 в сценарии не разводим: везде используется только scene4 → scene_4.jpg.
  */
+
+/** Подними при замене картинок в public/level5 — иначе CDN/браузер могут отдавать старый файл. */
+const LEVEL5_CACHE_BUST = '20250417'
 
 export function level5PublicUrl(pathFromPublic) {
   const base = import.meta.env.BASE_URL ?? '/'
   const normalized = pathFromPublic.startsWith('/') ? pathFromPublic.slice(1) : pathFromPublic
-  return `${base}${normalized}`.replace(/([^:]\/)\/+/g, '$1')
+  let url = `${base}${normalized}`.replace(/([^:]\/)\/+/g, '$1')
+  if (normalized.startsWith('level5/')) {
+    const sep = url.includes('?') ? '&' : '?'
+    url = `${url}${sep}v=${LEVEL5_CACHE_BUST}`
+  }
+  return url
 }
 
 const SCENES = {
   scene1: ['level5/scene_1.jpg', 'level5/scene1.jpg', 'level5/Scene_1.jpg'],
   scene2: ['level5/scene_2.jpg', 'level5/scene2.jpg', 'level5/Scene_2.jpg'],
-  scene3: ['level5/scene_3.jpg', 'level5/scene3.jpg', 'level5/Scene_3.jpg'],
   scene4: ['level5/scene_4.jpg', 'level5/scene4.jpg', 'level5/Scene_4.jpg'],
 }
 

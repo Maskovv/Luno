@@ -19,7 +19,9 @@ export function LoginPage() {
     const classId = searchParams.get('class')
     if (classId) {
       localStorage.setItem('pendingClassId', classId)
+      return
     }
+    localStorage.removeItem('pendingClassId')
   }, [searchParams])
 
   const handleSubmit = async (e) => {
@@ -43,10 +45,11 @@ export function LoginPage() {
     try {
       if (mode === 'login') {
         await login(email.trim(), password)
+        navigate('/levels')
       } else {
         await register(email.trim(), password, name.trim())
+        navigate('/welcome', { replace: true })
       }
-      navigate('/levels')
     } catch (err) {
       setError(err?.message || 'Ошибка входа или регистрации.')
     } finally {

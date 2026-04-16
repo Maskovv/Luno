@@ -14,7 +14,7 @@ function VkShell({ children }) {
   return (
     <div className="l5-root">
       <div className="l5-vk-top">
-        <span className="l5-vk-logo">VK</span>
+        <span className="l5-vk-logo">Vibe</span>
         <div className="l5-vk-search">🔍 Поиск</div>
         <div className="l5-vk-icons" aria-hidden>
           🏠 ☰

@@ -41,6 +41,58 @@ export function AuthProvider({ children }) {
       new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
     ])
 
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+  const withRetries = async (fn, attempts = 3, delayMs = 700) => {
+    let lastError = null
+    for (let i = 0; i < attempts; i += 1) {
+      try {
+        return await fn()
+      } catch (e) {
+        lastError = e
+        if (i < attempts - 1) await sleep(delayMs)
+      }
+    }
+    throw lastError || new Error('retry_failed')
+  }
+
+  const syncUserProfileAndClass = async (authUser) => {
+    if (!authUser) return
+    await withTimeout(
+      ensureUserProfile({
+        uid: authUser.uid,
+        email: authUser.email,
+        displayName: authUser.displayName,
+      }),
+      5000,
+    )
+
+    const pendingClassId = localStorage.getItem('pendingClassId')
+    if (!pendingClassId) return
+
+    const teacherUid = await withRetries(
+      () => withTimeout(getClassTeacherUid(pendingClassId), 12000),
+      3,
+      900,
+    )
+    if (!teacherUid) return
+
+    await withRetries(
+      () =>
+        withTimeout(
+          attachStudentToClass({
+            uid: authUser.uid,
+            teacherUid,
+            classId: pendingClassId,
+          }),
+          12000,
+        ),
+      3,
+      900,
+    )
+    localStorage.removeItem('pendingClassId')
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setLoading(true)
@@ -52,37 +104,9 @@ export function AuthProvider({ children }) {
         // ВАЖНО: ничего не блокируем — всё делаем в фоне
         ;(async () => {
           try {
-            await withTimeout(
-              ensureUserProfile({
-                uid: user.uid,
-                email: user.email,
-                displayName: user.displayName,
-              }),
-              5000,
-            )
+            await syncUserProfileAndClass(user)
           } catch (e) {
-            console.error(e)
-          }
-
-          // если ученик пришёл по QR (classId), привязываем к учителю
-          const pendingClassId = localStorage.getItem('pendingClassId')
-          if (pendingClassId) {
-            try {
-              const teacherUid = await withTimeout(getClassTeacherUid(pendingClassId), 5000)
-              if (teacherUid) {
-                await withTimeout(
-                  attachStudentToClass({
-                    uid: user.uid,
-                    teacherUid,
-                    classId: pendingClassId,
-                  }),
-                  5000,
-                )
-                localStorage.removeItem('pendingClassId')
-              }
-            } catch (e) {
-              console.error(e)
-            }
+            console.error('[auth] syncUserProfileAndClass failed', e)
           }
 
           try {
@@ -104,7 +128,11 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      // Не блокируем UI Firestore-операциями: onAuthStateChanged всё сделает.
+      try {
+        await syncUserProfileAndClass(userCredential.user)
+      } catch (e) {
+        console.error('[auth] login syncUserProfileAndClass failed', e)
+      }
       return userCredential.user
     } catch (error) {
       throw new Error(getAuthErrorMessage(error?.code))
@@ -117,7 +145,14 @@ export function AuthProvider({ children }) {
       if (displayName?.trim()) {
         await updateProfile(userCredential.user, { displayName: displayName.trim() })
       }
-      // Не блокируем UI Firestore-операциями: onAuthStateChanged всё сделает.
+      try {
+        await syncUserProfileAndClass({
+          ...userCredential.user,
+          displayName: displayName?.trim() || userCredential.user.displayName,
+        })
+      } catch (e) {
+        console.error('[auth] register syncUserProfileAndClass failed', e)
+      }
       return userCredential.user
     } catch (error) {
       throw new Error(getAuthErrorMessage(error?.code))

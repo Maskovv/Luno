@@ -11,8 +11,8 @@ import { Game5TwoFactor } from './Game5TwoFactor'
 import { Level1FinalTest } from './Level1FinalTest'
 import {
   completeLevel as completeLevelInDb,
-  getLevelState,
-  getUnlockedLevels,
+  flushLevelStepForExit,
+  getLevelProgress,
   setLevelStep,
   unlockNextLevel,
 } from '../../../shared/api/firestoreProgress'
@@ -76,24 +76,19 @@ export function Level1Flow() {
   const { user, isTeacher, roleLoading } = useAuth()
   const [step, setStep] = useState(0)
   const [glossaryOpen, setGlossaryOpen] = useState(false)
-  const [welcomeReady, setWelcomeReady] = useState(false)
-  const [showWelcome, setShowWelcome] = useState(false)
+  const [progressReady, setProgressReady] = useState(false)
 
   useEffect(() => {
     let cancelled = false
     if (!user) return
     ;(async () => {
-      const [state, unlocked] = await Promise.all([
-        getLevelState(user.uid, LEVEL_ID),
-        getUnlockedLevels(user.uid),
-      ])
+      const state = await getLevelProgress(user.uid, LEVEL_ID)
       if (cancelled) return
 
       if (state?.completed) {
         setStep(0)
         setLevelStep(user.uid, LEVEL_ID, 0)
-        setShowWelcome(false)
-        setWelcomeReady(true)
+        setProgressReady(true)
         return
       }
 
@@ -101,67 +96,40 @@ export function Level1Flow() {
         setStep(state.step)
       }
 
-      const maxUnlocked = unlocked.length ? Math.max(...unlocked) : 1
-      const onlyLevel1 = maxUnlocked === 1
-      setShowWelcome(onlyLevel1 && state == null)
-
-      setWelcomeReady(true)
+      setProgressReady(true)
     })()
     return () => {
       cancelled = true
     }
   }, [user])
 
-  const saveStep = (next) => {
+  const saveStep = async (next) => {
     setStep(next)
-    if (user) setLevelStep(user.uid, LEVEL_ID, next)
+    if (user) await setLevelStep(user.uid, LEVEL_ID, next)
   }
 
-  const next = () => saveStep(step + 1)
-  const prev = () => saveStep(Math.max(0, step - 1))
+  const next = () => void saveStep(step + 1)
+  const prev = () => void saveStep(Math.max(0, step - 1))
 
-  const completeLevel = () => {
+  const exitToLevels = async () => {
+    await flushLevelStepForExit(user?.uid, LEVEL_ID, step)
+    navigate('/levels')
+  }
+
+  const completeLevel = async () => {
     if (user) {
-      unlockNextLevel(user.uid, 2)
-      completeLevelInDb(user.uid, LEVEL_ID)
-      setLevelStep(user.uid, LEVEL_ID, 0)
+      await Promise.all([
+        unlockNextLevel(user.uid, 2),
+        completeLevelInDb(user.uid, LEVEL_ID),
+        setLevelStep(user.uid, LEVEL_ID, 0),
+      ])
     }
     navigate('/levels')
   }
 
   const item = level1Flow[step]
-  if (!welcomeReady) {
+  if (!progressReady) {
     return <div className="level-page">Загрузка…</div>
-  }
-
-  if (showWelcome) {
-    const dismissWelcome = () => {
-      if (user) setLevelStep(user.uid, LEVEL_ID, 0)
-      setShowWelcome(false)
-    }
-    return (
-      <div className="level-page">
-        <div className="level-container l1-wide">
-          <div className="level-header">
-            <button type="button" className="back-button" onClick={() => navigate('/levels')}>
-              ← Назад
-            </button>
-            <h1>{LEVEL1_TITLE}</h1>
-          </div>
-          <GameSplashScreen
-            title="Добро пожаловать!"
-            paragraphs={[
-              'Здравствуйте! Это учебная игра по **кибербезопасности** для школьников.',
-              'Вы пройдёте сценарии с героями, мини-игры и тесты — шаг за шагом, с подсказками Луно.',
-              'Пока открыт только первый уровень: начните с него и по мере прохождения откроются следующие.',
-            ]}
-            buttonText="Начать игру"
-            onContinue={dismissWelcome}
-            lunoAvatarUrls={LUNO_AVATAR_URLS}
-          />
-        </div>
-      </div>
-    )
   }
 
   if (!item) {
@@ -169,13 +137,13 @@ export function Level1Flow() {
   }
 
   const flowLen = level1Flow.length
-  const teacherExitPreview = () => navigate('/levels')
+  const teacherExitPreview = () => void exitToLevels()
 
   const isCinematic = item.type === 'scene' || (item.type === 'dialogue' && item.bgKey)
 
   const renderHeader = () => (
     <div className="level-header level-header-with-tools">
-      <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+      <button type="button" className="back-button" onClick={() => void exitToLevels()}>
         ← Назад
       </button>
       <h1>{LEVEL1_TITLE}</h1>

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '../features/auth'
 import { QRCodePage } from '../features/qr-code'
-import { LoginPage } from '../features/auth'
+import { LoginPage, PostRegistrationWelcomePage } from '../features/auth'
 import { LevelSelectionPage } from '../features/level-selection'
 import { LevelPage } from '../features/level'
 import { StatisticsPage } from '../features/statistics'
@@ -22,6 +22,14 @@ function App() {
             }
           />
           <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/welcome"
+            element={
+              <ProtectedRoute>
+                <PostRegistrationWelcomePage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/levels"
             element={

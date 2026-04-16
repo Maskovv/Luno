@@ -13,6 +13,7 @@ export function Level1FinalTest({ onComplete, lunoAvatarUrls }) {
   const [fill, setFill] = useState({})
   const [step, setStep] = useState(0)
   const [submitted, setSubmitted] = useState(false)
+  const [wrongStepMap, setWrongStepMap] = useState({})
 
   const fillCorrect = useMemo(() => {
     return level1TestFill.blanks.every((b) => (fill[b.id] || '') === b.answer)
@@ -32,9 +33,15 @@ export function Level1FinalTest({ onComplete, lunoAvatarUrls }) {
   const checkMcBlock = () => {
     const firstWrong = level1TestQuestions.findIndex((q) => answers[q.id] !== q.correct)
     if (firstWrong === -1) {
+      setWrongStepMap({})
       setSubmitted(false)
       setStep(MC_COUNT)
     } else {
+      const nextWrongMap = {}
+      level1TestQuestions.forEach((q, idx) => {
+        if (answers[q.id] !== q.correct) nextWrongMap[idx] = true
+      })
+      setWrongStepMap(nextWrongMap)
       setSubmitted(true)
       setStep(firstWrong)
     }
@@ -95,9 +102,7 @@ export function Level1FinalTest({ onComplete, lunoAvatarUrls }) {
               )
             })}
           </div>
-          {submitted && answers[level1TestQuestions[step].id] !== level1TestQuestions[step].correct && (
-            <p className="l1-feedback-bad">Неверно.</p>
-          )}
+          {submitted && wrongStepMap[step] && <p className="l1-feedback-bad">Неверно.</p>}
           <div className="l1-test-nav">
             {step > 0 && (
               <button type="button" className="back-button" onClick={() => setStep((s) => s - 1)}>

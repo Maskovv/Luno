@@ -13,6 +13,7 @@ export function Game2FindSigns({ onComplete, lunoAvatarUrls }) {
   const [found, setFound] = useState(new Set())
   const [msg, setMsg] = useState('')
   const [popupOpen, setPopupOpen] = useState(false)
+  const [decoys, setDecoys] = useState(new Set())
 
   useEffect(() => {
     const t = setTimeout(() => setPopupOpen(true), POPUP_AUTO_MS)
@@ -20,6 +21,13 @@ export function Game2FindSigns({ onComplete, lunoAvatarUrls }) {
   }, [])
 
   const click = (id) => {
+    const sign = game2Signs.find((x) => x.id === id)
+    if (!sign) {
+      if (decoys.has(id)) return
+      setDecoys((d) => new Set([...d, id]))
+      setMsg('Это обычный элемент интерфейса. Не каждая выделенная фраза — признак фишинга.')
+      return
+    }
     if (found.has(id)) return
     const s = game2Signs.find((x) => x.id === id)
     setFound((f) => new Set([...f, id]))
@@ -72,7 +80,16 @@ export function Game2FindSigns({ onComplete, lunoAvatarUrls }) {
               <span className="l2-site-hero-title">Мгновенный приз</span>
             </div>
           </div>
-          <h3>Вы выиграли приз! Заберите прямо сейчас</h3>
+          <h3>
+            <button
+              type="button"
+              className={`l2-hot-inline ${decoys.has('decoy_prize_title') ? 'l2-found' : ''}`}
+              onClick={() => click('decoy_prize_title')}
+            >
+              Вы выиграли приз
+            </button>
+            ! Заберите прямо сейчас
+          </h3>
           <p>
             <button
               type="button"

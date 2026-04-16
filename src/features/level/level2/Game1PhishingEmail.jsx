@@ -8,8 +8,16 @@ import './level2.css'
 export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
   const [found, setFound] = useState(new Set())
   const [msg, setMsg] = useState('')
+  const [decoys, setDecoys] = useState(new Set())
 
   const click = (id) => {
+    const hotspot = game1EmailHotspots.find((x) => x.id === id)
+    if (!hotspot) {
+      if (decoys.has(id)) return
+      setDecoys((d) => new Set([...d, id]))
+      setMsg('Это нейтральная фраза: сама по себе она не доказывает фишинг. Ищи более явные признаки.')
+      return
+    }
     if (found.has(id)) return
     const s = game1EmailHotspots.find((x) => x.id === id)
     setFound((f) => new Set([...f, id]))
@@ -36,7 +44,13 @@ export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
         </div>
         <div className="l2-mail-toolbar">
           <span className="l2-mail-toolbar-pill">Написать</span>
-          <span className="l2-mail-toolbar-muted">Входящие</span>
+          <button
+            type="button"
+            className={`l2-hot-inline ${decoys.has('toolbar_inbox') ? 'l2-found' : ''}`}
+            onClick={() => click('toolbar_inbox')}
+          >
+            Входящие
+          </button>
           <span className="l2-mail-toolbar-muted">Отправленные</span>
           <span className="l2-mail-toolbar-muted">Спам</span>
         </div>
@@ -44,11 +58,23 @@ export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
           <aside className="l2-mail-aside">
             <div className="l2-mail-aside-row l2-mail-aside-row--active">
               <span className="l2-mail-aside-dot" />
-              Служба безопасности
+              <button
+                type="button"
+                className={`l2-hot-inline ${decoys.has('aside_security') ? 'l2-found' : ''}`}
+                onClick={() => click('aside_security')}
+              >
+                Служба безопасности
+              </button>
             </div>
             <div className="l2-mail-aside-row">
               <span className="l2-mail-aside-dot l2-mail-aside-dot--dim" />
-              Рассылка курса
+              <button
+                type="button"
+                className={`l2-hot-inline ${decoys.has('aside_newsletter') ? 'l2-found' : ''}`}
+                onClick={() => click('aside_newsletter')}
+              >
+                Рассылка курса
+              </button>
             </div>
             <div className="l2-mail-aside-row">
               <span className="l2-mail-aside-dot l2-mail-aside-dot--dim" />
@@ -97,7 +123,14 @@ export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
         <div className="l2-email-letter">
         <div className="l2-email-body">
           <p>
-            Здравствуйте,{" "}
+            <button
+              type="button"
+              className={`l2-hot-inline ${decoys.has('greeting') ? 'l2-found' : ''}`}
+              onClick={() => click('greeting')}
+            >
+              Здравствуйте
+            </button>
+            ,{" "}
             <button
               type="button"
               className={`l2-hot-inline ${found.has('generic') ? 'l2-found' : ''}`}
@@ -108,7 +141,14 @@ export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
             !
           </p>
           <p>
-            Мы заметили подозрительную активность.{" "}
+            <button
+              type="button"
+              className={`l2-hot-inline ${decoys.has('neutral_intro') ? 'l2-found' : ''}`}
+              onClick={() => click('neutral_intro')}
+            >
+              Мы заметили
+            </button>{' '}
+            подозрительную активность.{" "}
             <button
               type="button"
               className={`l2-hot-inline ${found.has('urgent') ? 'l2-found' : ''}`}
@@ -140,7 +180,14 @@ export function Game1PhishingEmail({ onComplete, lunoAvatarUrls }) {
             в ответ на это письмо.
           </p>
           <p>
-            Спасибо!{" "}
+            <button
+              type="button"
+              className={`l2-hot-inline ${decoys.has('thanks') ? 'l2-found' : ''}`}
+              onClick={() => click('thanks')}
+            >
+              Спасибо
+            </button>
+            !{" "}
             <button
               type="button"
               className={`l2-hot-inline ${found.has('typos') ? 'l2-found' : ''}`}

@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth'
 import {
   completeLevel as completeLevelInDb,
-  getLevelState,
+  flushLevelStepForExit,
+  getLevelProgress,
   setLevelStep,
   unlockNextLevel,
 } from '../../../shared/api/firestoreProgress'
@@ -700,7 +701,7 @@ function MazeGame({ onNext }) {
               <button type="button" className="l2-good" onClick={() => move(-1, 0)}>←</button>
               <button type="button" className="l2-good" onClick={() => move(1, 0)}>→</button>
             </div>
-            <button type="button" className="l2-good" onClick={() => move(0, 1)}>↓</button>
+            <button type="button" className="l2-good l3-maze-down-btn" onClick={() => move(0, 1)}>↓</button>
           </div>
         </div>
       </div>
@@ -1047,7 +1048,7 @@ export function Level3Flow() {
     let cancelled = false
     if (!user) return
     ;(async () => {
-      const state = await getLevelState(user.uid, LEVEL_ID)
+      const state = await getLevelProgress(user.uid, LEVEL_ID)
       if (cancelled) return
       if (state?.completed) {
         setStep(0)
@@ -1065,12 +1066,17 @@ export function Level3Flow() {
     window.scrollTo(0, 0)
   }, [step])
 
-  const save = (n) => {
+  const save = async (n) => {
     setStep(n)
-    if (user) setLevelStep(user.uid, LEVEL_ID, n)
+    if (user) await setLevelStep(user.uid, LEVEL_ID, n)
   }
-  const next = () => save(step + 1)
-  const prev = () => save(Math.max(0, step - 1))
+  const next = () => void save(step + 1)
+  const prev = () => void save(Math.max(0, step - 1))
+
+  const exitToLevels = async () => {
+    await flushLevelStepForExit(user?.uid, LEVEL_ID, step)
+    navigate('/levels')
+  }
 
   const finish = async () => {
     if (user) {
@@ -1087,7 +1093,7 @@ export function Level3Flow() {
   if (!item) return <div className="level-page">Загрузка…</div>
 
   const flowLen = level3Flow.length
-  const teacherExitPreview = () => navigate('/levels')
+  const teacherExitPreview = () => void exitToLevels()
 
   const prevBtn = step > 0 && (
     <div className="scenario-prev-wrap">
@@ -1111,7 +1117,7 @@ export function Level3Flow() {
   if (item.type === 'scene2popups') {
     return (
       <>
-        <Level3Scene2Popups onNext={next} flowStep={step} />
+        <Level3Scene2Popups onNext={next} flowStep={step} onBackToLevels={() => void exitToLevels()} />
         {teacherSkip}
       </>
     )
@@ -1161,7 +1167,7 @@ export function Level3Flow() {
           <Level3Backdrop key={step} bgKey={item.bgKey} />
           <div className="l1-cinematic-chrome" onClick={(e) => e.stopPropagation()}>
             <div className="level-header">
-              <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+              <button type="button" className="back-button" onClick={() => void exitToLevels()}>
                 ← Назад
               </button>
               <h1>{LEVEL3_TITLE}</h1>
@@ -1203,7 +1209,7 @@ export function Level3Flow() {
     <div className="level-page level-page--l3">
       <div className="level-container l2-wide">
         <div className="level-header">
-          <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+          <button type="button" className="back-button" onClick={() => void exitToLevels()}>
             ← Назад
           </button>
           <h1>{LEVEL3_TITLE}</h1>

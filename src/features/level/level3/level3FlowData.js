@@ -9,7 +9,6 @@ export const virusTheorySlides = [
     key: 'virus',
     emoji: '🦠',
     lunoBlocks: [
-      { type: 'p', text: '**Вирус**' },
       {
         type: 'p',
         text:
@@ -211,7 +210,7 @@ export const threats = [
   {
     id: 'adware',
     title: '📢 Рекламное ПО',
-    screen: { kind: 'adware', actionLabel: 'Скачать' },
+    screen: { kind: 'adware', actionLabel: 'Скачать расширение для браузера' },
     symptoms: [
       'всплывают окна',
       'открываются новые вкладки',

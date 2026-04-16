@@ -82,7 +82,7 @@ function DialogueBlock({ speaker, lines }) {
 /**
  * Сцена 2: звонок + всплывающее «СМС» + реплика Маши.
  */
-export function Level4Scene2Call({ onNext, onScenarioPrev, flowStep = 0 }) {
+export function Level4Scene2Call({ onNext, onScenarioPrev, flowStep = 0, onBackToLevels }) {
   const navigate = useNavigate()
   const [step, setStep] = useState(0)
   const [smsOpen, setSmsOpen] = useState(false)
@@ -115,7 +115,11 @@ export function Level4Scene2Call({ onNext, onScenarioPrev, flowStep = 0 }) {
         <BackdropScene2 flowStep={flowStep} />
         <div className="l1-cinematic-chrome" onClick={(e) => e.stopPropagation()}>
           <div className="level-header">
-            <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+            <button
+              type="button"
+              className="back-button"
+              onClick={() => (onBackToLevels ? onBackToLevels() : navigate('/levels'))}
+            >
               ← Назад
             </button>
             <h1>{LEVEL4_TITLE}</h1>

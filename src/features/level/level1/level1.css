@@ -351,6 +351,26 @@
   gap: 12px;
 }
 
+@media (max-width: 900px) {
+  .l1-game4-btns-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .l1-pwd-display-large {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .l1-pwd-display-large code.l1-pwd-value {
+    font-size: 1.08rem;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
 .l1-pwd-display-large .l1-pwd-label {
   font-weight: 700;
   color: #455a64;
@@ -1147,6 +1167,24 @@
 }
 
 @media (max-width: 640px) {
+  .l1-game4-btns-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .l1-pwd-display-large {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .l1-pwd-display-large code.l1-pwd-value {
+    font-size: 1.08rem;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   .l1-dialogue-bubble-glass p:not(.l1-dialogue-speaker) {
     font-size: 1.08rem;
   }

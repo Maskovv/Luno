@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth'
 import {
   completeLevel as completeLevelInDb,
-  getLevelState,
+  flushLevelStepForExit,
+  getLevelProgress,
   setLevelStep,
   unlockNextLevel,
 } from '../../../shared/api/firestoreProgress'
@@ -497,7 +498,7 @@ export function Level4Flow() {
     let cancelled = false
     if (!user) return
     ;(async () => {
-      const state = await getLevelState(user.uid, LEVEL_ID)
+      const state = await getLevelProgress(user.uid, LEVEL_ID)
       if (cancelled) return
       if (state?.completed) {
         setStep(0)
@@ -515,12 +516,17 @@ export function Level4Flow() {
     window.scrollTo(0, 0)
   }, [step])
 
-  const save = (n) => {
+  const save = async (n) => {
     setStep(n)
-    if (user) setLevelStep(user.uid, LEVEL_ID, n)
+    if (user) await setLevelStep(user.uid, LEVEL_ID, n)
   }
-  const next = () => save(step + 1)
-  const prev = () => save(Math.max(0, step - 1))
+  const next = () => void save(step + 1)
+  const prev = () => void save(Math.max(0, step - 1))
+
+  const exitToLevels = async () => {
+    await flushLevelStepForExit(user?.uid, LEVEL_ID, step)
+    navigate('/levels')
+  }
 
   const finish = async () => {
     if (user) {
@@ -537,7 +543,7 @@ export function Level4Flow() {
   if (!item) return <div className="level-page">Загрузка…</div>
 
   const flowLen = level4Flow.length
-  const teacherExitPreview = () => navigate('/levels')
+  const teacherExitPreview = () => void exitToLevels()
 
   const prevBtn = step > 0 && (
     <div className="scenario-prev-wrap">
@@ -561,7 +567,12 @@ export function Level4Flow() {
   if (item.type === 'scene2call') {
     return (
       <>
-        <Level4Scene2Call onNext={next} onScenarioPrev={prev} flowStep={step} />
+        <Level4Scene2Call
+          onNext={next}
+          onScenarioPrev={prev}
+          flowStep={step}
+          onBackToLevels={() => void exitToLevels()}
+        />
         {teacherSkip}
       </>
     )
@@ -574,7 +585,7 @@ export function Level4Flow() {
           <Level4Backdrop key={step} bgKey={item.bgKey} />
           <div className="l1-cinematic-chrome" onClick={(e) => e.stopPropagation()}>
             <div className="level-header">
-              <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+              <button type="button" className="back-button" onClick={() => void exitToLevels()}>
                 ← Назад
               </button>
               <h1>{LEVEL4_TITLE}</h1>
@@ -616,7 +627,7 @@ export function Level4Flow() {
     <div className="level-page level-page--l4">
       <div className="level-container l2-wide">
         <div className="level-header">
-          <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+          <button type="button" className="back-button" onClick={() => void exitToLevels()}>
             ← Назад
           </button>
           <h1>{LEVEL4_TITLE}</h1>

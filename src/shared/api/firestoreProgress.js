@@ -20,6 +20,38 @@ function levelDoc(uid, levelId) {
   return doc(db, 'users', uid, 'levels', String(levelId))
 }
 
+/** Локальный резерв шага (устойчив к сбоям записи в Firestore / правилам). */
+const LS_PREFIX = 'cyber_lvl_v1:'
+
+function levelProgressLsKey(uid, levelId) {
+  return `${LS_PREFIX}${uid}:${String(levelId)}`
+}
+
+export function readLevelProgressLocal(uid, levelId) {
+  if (!uid || typeof localStorage === 'undefined') return null
+  try {
+    const raw = localStorage.getItem(levelProgressLsKey(uid, levelId))
+    if (!raw) return null
+    const o = JSON.parse(raw)
+    if (o && typeof o.step === 'number' && o.step >= 0) return o
+  } catch {
+    /* ignore */
+  }
+  return null
+}
+
+function writeLevelProgressLocal(uid, levelId, step) {
+  if (!uid || typeof localStorage === 'undefined') return
+  try {
+    localStorage.setItem(
+      levelProgressLsKey(uid, levelId),
+      JSON.stringify({ step, updatedAt: Date.now() }),
+    )
+  } catch {
+    /* quota / private mode */
+  }
+}
+
 export async function ensureUserProfile({ uid, email, displayName }) {
   const ref = userDoc(uid)
   const snap = await getDoc(ref)
@@ -91,16 +123,54 @@ export async function getLevelState(uid, levelId) {
   return snap.data()
 }
 
+/**
+ * Состояние уровня с учётом локального резерва: если в облаке шаг «отстаёт» или пусто — поднимаем и при возможности синхронизируем.
+ */
+export async function getLevelProgress(uid, levelId) {
+  const remote = await getLevelState(uid, levelId)
+  if (remote?.completed) return remote
+
+  const local = readLevelProgressLocal(uid, levelId)
+  if (!remote && !local) return null
+  if (remote && !local) return remote
+  if (!remote && local) {
+    void setLevelStep(uid, levelId, local.step)
+    return { step: local.step }
+  }
+
+  const rStep = Number(remote.step) || 0
+  const lStep = Number(local.step) || 0
+  if (lStep > rStep) {
+    void setLevelStep(uid, levelId, lStep)
+    return { ...remote, step: lStep }
+  }
+  return remote
+}
+
 export async function setLevelStep(uid, levelId, step) {
+  writeLevelProgressLocal(uid, levelId, step)
   const ref = levelDoc(uid, levelId)
-  await setDoc(
-    ref,
-    {
-      step,
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true },
-  )
+  try {
+    await setDoc(
+      ref,
+      {
+        step,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    )
+  } catch (e) {
+    console.error('[progress] Firestore setLevelStep failed (шаг сохранён локально)', levelId, e)
+  }
+}
+
+/**
+ * Сохранить текущий шаг перед уходом со страницы уровня (меню «Назад»).
+ * Ошибки сети логируются и не блокируют переход — иначе пользователь «теряет» сессию визуально.
+ */
+export async function flushLevelStepForExit(uid, levelId, step) {
+  if (!uid) return
+  await setLevelStep(uid, levelId, step)
 }
 
 export async function completeLevel(uid, levelId) {

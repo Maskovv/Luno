@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth'
 import {
   completeLevel as completeLevelInDb,
-  getLevelState,
+  flushLevelStepForExit,
+  getLevelProgress,
   setLevelStep,
   unlockNextLevel,
 } from '../../../shared/api/firestoreProgress'
@@ -81,7 +82,7 @@ export function Level2Flow() {
     let cancelled = false
     if (!user) return
     ;(async () => {
-      const state = await getLevelState(user.uid, LEVEL_ID)
+      const state = await getLevelProgress(user.uid, LEVEL_ID)
       if (cancelled) return
       if (state?.completed) {
         setStep(0)
@@ -95,12 +96,17 @@ export function Level2Flow() {
     }
   }, [user])
 
-  const save = (next) => {
+  const save = async (next) => {
     setStep(next)
-    if (user) setLevelStep(user.uid, LEVEL_ID, next)
+    if (user) await setLevelStep(user.uid, LEVEL_ID, next)
   }
-  const next = () => save(step + 1)
-  const prev = () => save(Math.max(0, step - 1))
+  const next = () => void save(step + 1)
+  const prev = () => void save(Math.max(0, step - 1))
+
+  const exitToLevels = async () => {
+    await flushLevelStepForExit(user?.uid, LEVEL_ID, step)
+    navigate('/levels')
+  }
 
   const finish = async () => {
     if (user) {
@@ -117,7 +123,7 @@ export function Level2Flow() {
   if (!item) return <div className="level-page">Загрузка…</div>
 
   const flowLen = level2Flow.length
-  const teacherExitPreview = () => navigate('/levels')
+  const teacherExitPreview = () => void exitToLevels()
 
   const isCinematic = item.type === 'dialogue' && item.bgKey
 
@@ -156,7 +162,7 @@ export function Level2Flow() {
 
   const headerWithGlossary = () => (
     <div className="level-header level-header-with-tools">
-      <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+      <button type="button" className="back-button" onClick={() => void exitToLevels()}>
         ← Назад
       </button>
       <h1>{LEVEL2_TITLE}</h1>

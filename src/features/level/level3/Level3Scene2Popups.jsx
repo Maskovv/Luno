@@ -28,7 +28,7 @@ function Backdrop({ attempt, setAttempt }) {
   )
 }
 
-export function Level3Scene2Popups({ onNext, flowStep = 0 }) {
+export function Level3Scene2Popups({ onNext, flowStep = 0, onBackToLevels }) {
   const navigate = useNavigate()
   const [attempt, setAttempt] = useState(0)
   const [phase, setPhase] = useState(0)
@@ -58,7 +58,11 @@ export function Level3Scene2Popups({ onNext, flowStep = 0 }) {
         <Backdrop attempt={attempt} setAttempt={setAttempt} />
         <div className="l1-cinematic-chrome" onClick={(e) => e.stopPropagation()}>
           <div className="level-header">
-            <button type="button" className="back-button" onClick={() => navigate('/levels')}>
+            <button
+              type="button"
+              className="back-button"
+              onClick={() => (onBackToLevels ? onBackToLevels() : navigate('/levels'))}
+            >
               ← Назад
             </button>
             <h1>{LEVEL3_TITLE}</h1>

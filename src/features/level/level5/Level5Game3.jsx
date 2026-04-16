@@ -17,7 +17,7 @@ function VkShell({ children }) {
   return (
     <div className="l5-root">
       <div className="l5-vk-top">
-        <span className="l5-vk-logo">VK</span>
+        <span className="l5-vk-logo">Vibe</span>
         <div className="l5-vk-search">🔍 Поиск</div>
         <div className="l5-vk-icons" aria-hidden>
           🏠 ☰
@@ -138,8 +138,6 @@ export function Level5Game3({ onNext }) {
             <p className="l5-profile-name">Аня</p>
             <div className="l5-profile-meta">
               Дата рождения: 3 марта
-              <br />
-              Образование: школа №33
             </div>
             <div className="l5-profile-icons" aria-hidden>
               👤 🎵 💬

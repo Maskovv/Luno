@@ -8,6 +8,9 @@
   border: 1px solid #eee;
   padding: 18px;
   text-align: left;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .l2-title {
@@ -196,6 +199,8 @@
   cursor: pointer;
   max-width: 100%;
   text-align: left;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .l2-hot-inline {
@@ -417,12 +422,14 @@
   gap: 6px;
   flex: 1;
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .l2-email-body {
   padding: 14px 16px 18px;
   color: #333;
   line-height: 1.65;
+  overflow-wrap: anywhere;
 }
 
 .l2-form {
@@ -673,10 +680,33 @@
   border-radius: 14px;
   border: 1px solid #e8edf4;
   box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .l2-email-letter .l2-email-body {
   padding: 16px 16px 18px;
+}
+
+@media (max-width: 900px) {
+  .l2-mail-main {
+    grid-template-columns: 1fr;
+  }
+
+  .l2-mail-aside {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 10px;
+  }
+
+  .l2-mail-aside-row {
+    margin-bottom: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
 }
 
 /* Карусель признаков фишинга */

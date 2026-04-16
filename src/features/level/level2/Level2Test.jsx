@@ -96,7 +96,7 @@ export function Level2Test({ onComplete, lunoAvatarUrls }) {
       <p className="l2-progress">Шаг {progress}</p>
       <div key={key} className="l2-q">
         <p className="l2-q-title">
-          <strong>{step + 1})</strong> {q.question}
+          <RichText>{q.question}</RichText>
         </p>
         <div className="l2-opts">
           {q.options.map((opt) => {

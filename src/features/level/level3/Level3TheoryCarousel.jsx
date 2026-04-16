@@ -68,6 +68,7 @@ export function Level3TheoryCarousel({ lunoAvatarUrls, onNext }) {
             </div>
             <div className="l3-theory-luno-bubble">
               <p className="l3-theory-luno-label">Луно</p>
+              <p className="l3-theory-threat-title">{THREAT_NAME[slide.key] || 'Тип угрозы'}</p>
               {slide.lunoBlocks.map((b, i) => (
                 <LunoBlock key={i} block={b} />
               ))}

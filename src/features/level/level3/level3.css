@@ -176,6 +176,25 @@
   font-size: 1rem;
 }
 
+@media (max-width: 900px) {
+  .l3-maze-plate {
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    gap: 8px 10px;
+  }
+
+  .l3-maze-grid {
+    width: min(94vw, 520px);
+  }
+
+  .l3-maze-controls .l2-good {
+    min-width: 34px;
+    padding: 6px 8px;
+    font-size: 0.9rem;
+  }
+}
+
 .l3-theory-carousel .l3-slide {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
@@ -316,6 +335,13 @@
 
 .l3-threat-modal p {
   color: #0f1430;
+}
+
+/* Иначе общий .l3-threat-modal p тёмный — на бордовой подложке не читается */
+.l3-threat-modal .l3-mock-ransom p.l3-mock-ransom-msg,
+.l3-threat-modal .l3-mock-ransom p.l3-mock-ransom-skull {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
 }
 
 .l3-threat-heading {
@@ -461,10 +487,10 @@
   font-weight: 800;
 }
 
-.l3-safepc-lead-sub strong,
-.l3-safepc-done-text strong {
+/* Подзаголовок на белой карточке — не белый, иначе не видно */
+.l3-safepc-lead-sub strong {
   font-weight: 800;
-  color: #ffffff;
+  color: #1a237e;
 }
 
 .l3-threat-modal .l2-opt {
@@ -755,6 +781,13 @@
   background: #fafbff;
 }
 
+.l3-mock-browser-body .l3-mock-btn-open {
+  width: 100%;
+  white-space: normal;
+  line-height: 1.3;
+  text-align: center;
+}
+
 .l3-mock-btn-trap {
   padding: 12px 16px;
   border-radius: 8px;
@@ -902,18 +935,20 @@
 
 @media (max-width: 640px) {
   .l3-maze-plate {
-    padding: 10px;
-    gap: 10px 12px;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    gap: 8px 10px;
   }
 
   .l3-maze-grid {
-    width: min(calc(100% - 72px), min(78vw, 340px));
+    width: min(94vw, 520px);
   }
 
   .l3-maze-controls .l2-good {
-    min-width: 36px;
-    padding: 7px 9px;
-    font-size: 0.95rem;
+    min-width: 34px;
+    padding: 6px 8px;
+    font-size: 0.9rem;
   }
 
   .l3-steps {
@@ -930,6 +965,33 @@
 
   .l3-desktop {
     grid-template-columns: 1fr;
+  }
+
+  .l3-pc-desktop {
+    padding: 10px 10px 52px;
+  }
+
+  .l3-pc-client {
+    padding: 12px;
+  }
+
+  .l3-pc-task-search {
+    display: none;
+  }
+
+  .l3-pc-task-pinned {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .l3-pc-task-tray {
+    gap: 6px;
+    padding-right: 2px;
+  }
+
+  .l3-pc-clock {
+    min-width: 0;
+    font-size: 11px;
   }
 }
 
@@ -997,8 +1059,15 @@
 
 .l3-theory-luno-label {
   font-weight: 800;
-  margin: 0 0 10px;
+  margin: 0 0 4px;
   color: #17204a;
+}
+
+.l3-theory-threat-title {
+  font-weight: 800;
+  font-size: 1.12rem;
+  margin: 0 0 12px;
+  color: #1a237e;
 }
 
 .l3-theory-luno-p {
@@ -1172,10 +1241,10 @@
 
 .l3-rules-body p {
   font-weight: 500;
-  font-size: 16px;
-  line-height: 1.58;
+  font-size: 19px;
+  line-height: 1.65;
   color: #1a2744;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 
 /* Симуляция ПК */
@@ -1239,6 +1308,12 @@
   font-weight: 600;
   margin: 0 0 14px;
   color: #e8ecff;
+}
+
+.l3-safepc-done-text strong {
+  font-weight: 800;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
 }
 
 .l3-safepc-continue {
@@ -1338,6 +1413,7 @@
   position: relative;
   border-radius: 10px;
   overflow: hidden;
+  max-width: 100%;
   border: 1px solid #1e293b;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.06) inset,

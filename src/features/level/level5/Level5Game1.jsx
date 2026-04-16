@@ -22,14 +22,14 @@ const THREAT_COMMENTS = [
   'Лёше ты никогда не понравишься… Если будешь с ним общаться, я найду тебя! Я знаю, где ты живёшь.',
   'Жди свой номер в позорном паблике… Если не веришь, что я знаю твой номер — ты ошибаешься: 89526784511',
   'Будешь выпендриваться — я всем расскажу твой секрет. Тогда мы все над тобой посмеёмся.',
-  'В 33 школе все такие глупые, как ты?',
+  'У вас в школе все такие глупые, как ты?',
 ]
 
 function VkShell({ children }) {
   return (
     <div className="l5-root">
       <div className="l5-vk-top">
-        <span className="l5-vk-logo">VK</span>
+        <span className="l5-vk-logo">Vibe</span>
         <div className="l5-vk-search">🔍 Поиск</div>
         <div className="l5-vk-icons" aria-hidden>
           🏠 ☰
@@ -149,8 +149,6 @@ export function Level5Game1({ onNext }) {
             <p className="l5-profile-name">Маша</p>
             <div className="l5-profile-meta">
               Дата рождения: 12 мая
-              <br />
-              Образование: школа №33
             </div>
             <div className="l5-profile-icons" aria-hidden>
               👤 🎵 💬
